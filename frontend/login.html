@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduLocker - Login</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background); color: var(--text-main); margin: 0; padding: 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: var(--card-bg); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); margin-left: 25px; font-weight: 600; font-size: 15px; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+        
+        .container { max-width: 400px; background: var(--card-bg); padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin: 60px auto; }
+        h2 { margin-top: 0; color: var(--text-main); font-size: 24px; margin-bottom: 8px; text-align: center; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 25px; font-size: 14px; text-align: center; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: var(--text-main); }
+        input[type="text"], input[type="password"] { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: #fff; }
+        
+        button { background-color: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: 600; transition: background 0.2s; }
+        button:hover { background-color: var(--primary-dark); }
+        
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; font-weight: 600; text-align: center; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">🔒 EduLocker</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/verify/">Verify</a>
+            <a href="/login/" style="color: var(--primary);">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to access your EduLocker portal</p>
+
+        {% if error %}
+            <div class="alert-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" name="username" id="id_username" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                <input type="password" name="password" id="id_password" required>
+            </div>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+</body>
+</html>

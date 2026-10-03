@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduLocker - Issue Secure Document</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background); color: var(--text-main); margin: 0; padding: 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: var(--card-bg); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); margin-left: 25px; font-weight: 600; font-size: 15px; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+        .btn { background: var(--primary); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn:hover { background: var(--primary-dark); }
+        
+        .container { max-width: 600px; margin: 50px auto; background: var(--card-bg); padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        h2 { margin-top: 0; color: var(--text-main); font-size: 24px; margin-bottom: 10px; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: var(--text-main); }
+        input[type="text"], select, input[type="file"] { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: #fff; }
+        input[type="file"] { padding: 8px; background: #f8fafc; }
+        
+        .alert { padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; font-weight: 600; }
+        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">🔒 EduLocker</a>
+        <div class="nav-links">
+              <a href="/">Home</a>
+              <a href="/admin-dashboard/" class="active">Issue Document</a>
+              <a href="/verify/">Verify</a>
+              <a href="/student-dashboard/">Dashboard</a>
+              <a href="/login/" style="background: var(--primary); color: white; padding: 8px 16px; border-radius: 6px;">Login</a>
+          </div>
+    </nav>
+
+    <div class="container">
+        <h2>Issue New Academic Document</h2>
+        <p class="subtitle">Upload a document file to generate its cryptographic hash and anchor it permanently to the blockchain network.</p>
+
+        {% if success %}
+            <div class="alert alert-success">✅ {{ success }}</div>
+        {% endif %}
+        {% if error %}
+            <div class="alert alert-error">❌ {{ error }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="document_id">Document ID</label>
+                <input type="text" id="document_id" name="document_id" placeholder="e.g. DOC102" required>
+            </div>
+
+            <div class="form-group">
+                <label for="student_id">Select Student</label>
+                <select id="student_id" name="student_id" required>
+                    <option value="">-- Choose Student --</option>
+                    {% for student in students %}
+                        <option value="{{ student.student_id }}">{{ student.name }} (ID: {{ student.student_id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="document_type">Document Type</label>
+                <select id="document_type" name="document_type" required>
+                    <option value="Marksheet">Marksheet</option>
+                    <option value="Certificate">Certificate</option>
+                    <option value="Bonafide">Bonafide Certificate</option>
+                    <option value="Internship">Internship Certificate</option>
+                    <option value="Identity">Identity Document</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="file">Upload Document File (PDF / Image)</label>
+                <input type="file" id="file" name="file" required>
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%;">Anchor to Blockchain</button>
+        </form>
+    </div>
+    <div class="card" style="background: white; padding: 30px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <h3>🔗 Blockchain Wallet Connection</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">Connect your MetaMask wallet to sign and issue verifiable academic credentials on-chain.</p>
+        <button type="button" id="connectWalletBtn" class="btn" style="background: #f59e0b; cursor: pointer;">Connect MetaMask</button>
+        <span id="walletStatus" style="margin-left: 15px; font-weight: 600; color: var(--text-muted); font-size: 14px;">Not Connected</span>
+    </div>
+
+    <!-- Include Ethers.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+<script>
+    let provider;
+    let signer;
+    let contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS"; // Replace with your deployed Ganache contract address
+    
+    // Paste your compiled ABI array from blockchain/build/contracts/EduLocker.json here
+    let contractABI = [
+        /* Paste ABI JSON array here */
+    ];
+
+    document.getElementById('connectWalletBtn').addEventListener('click', async () => {
+        if (window.ethereum) {
+            try {
+                // Request account access from MetaMask
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                
+                const address = await signer.getAddress();
+                const statusSpan = document.getElementById('walletStatus');
+                statusSpan.innerText = "Connected: " + address.substring(0, 6) + "..." + address.substring(address.length - 4);
+                statusSpan.style.color = "#10b981"; // Green color for success
+                
+                document.getElementById('connectWalletBtn').innerText = "Wallet Connected";
+                document.getElementById('connectWalletBtn').style.background = "#10b981";
+            } catch (error) {
+                console.error("User denied connection:", error);
+                alert("Connection failed or was rejected.");
+            }
+        } else {
+            alert("MetaMask is not installed. Please install it to use this feature.");
+        }
+    });
+</script>
+</body>
+</html>
