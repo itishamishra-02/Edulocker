@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduChain - Sign Up</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>🎓</span>
+            <strong>Edu<span>Chain</span></strong>
+        </div>
+
+        <nav>
+            <a href="#" class="nav-item">🏠 <span>Dashboard</span></a>
+            <a href="#" class="nav-item">👤 <span>My Profile</span></a>
+            <a href="#" class="nav-item">📚 <span>Academic Records</span></a>
+            <a href="#" class="nav-item">🎓 <span>Courses</span></a>
+            <a href="#" class="nav-item">📜 <span>Certificates</span></a>
+            <a href="#" class="nav-item">🏆 <span>Achievements</span></a>
+            <a href="#" class="nav-item">🎉 <span>College Events</span></a>
+            <a href="#" class="nav-item">🔐 <span>Verify Records</span></a>
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <div class="topbar">
+
+            <div>
+                <p class="eyebrow">
+                    STUDENT IDENTITY & RECORDS
+                </p>
+
+                <h1>Create Account</h1>
+
+                <p class="subtitle">
+                    Register with EduChain to manage verified academic records.
+                </p>
+            </div>
+
+            <button class="wallet-btn">
+                Connect Wallet
+            </button>
+
+        </div>
+
+
+        <!-- SIGNUP CARD -->
+        <section class="signup-card">
+
+            <div class="card-heading">
+
+                <div>
+                    <h2>Sign Up</h2>
+
+                    <p>
+                        Create your EduChain account
+                    </p>
+                </div>
+
+                <div class="verified-badge">
+                    ✓ Secure Registration
+                </div>
+
+            </div>
+
+
+            <!-- ACCOUNT TYPE -->
+            <div class="account-type">
+
+                <label>
+                    Register as
+                </label>
+
+                <div class="role-buttons">
+
+                    <button
+                        type="button"
+                        class="role active"
+                        onclick="selectRole('student', this)">
+                        🎓 Student
+                    </button>
+
+                    <button
+                        type="button"
+                        class="role"
+                        onclick="selectRole('admin', this)">
+                        🛡️ Admin
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FORM -->
+            <form id="signupForm">
+
+                <input
+                    type="hidden"
+                    id="role"
+                    value="student"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <!-- FULL NAME -->
+                    <div class="field">
+
+                        <label for="fullName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="fullName"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div class="field">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter email address"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- STUDENT ID -->
+                    <div class="field student-field">
+
+                        <label for="studentId">
+                            Student ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="studentId"
+                            placeholder="e.g. STU2026001"
+                        >
+
+                    </div>
+
+
+                    <!-- COURSE -->
+                    <div class="field student-field">
+
+                        <label for="course">
+                            Course
+                        </label>
+
+                        <select id="course">
+
+                            <option value="">
+                                Select course
+                            </option>
+
+                            <option>
+                                B.Tech Computer Science
+                            </option>
+
+                            <option>
+                                B.Tech Information Technology
+                            </option>
+
+                            <option>
+                                BCA
+                            </option>
+
+                            <option>
+                                MCA
+                            </option>
+
+                            <option>
+                                M.Tech
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- COLLEGE -->
+                    <div class="field student-field">
+
+                        <label for="college">
+                            College / Institute
+                        </label>
+
+                        <input
+                            type="text"
+                            id="college"
+                            placeholder="Enter institute name"
+                        >
+
+                    </div>
+
+
+                    <!-- ADMISSION YEAR -->
+                    <div class="field student-field">
+
+                        <label for="admissionYear">
+                            Admission Year
+                        </label>
+
+                        <select id="admissionYear">
+
+                            <option value="">
+                                Select year
+                            </option>
+
+                            <option>2026</option>
+                            <option>2025</option>
+                            <option>2024</option>
+                            <option>2023</option>
+                            <option>2022</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ADMIN ID -->
+                    <div class="field admin-field hidden">
+
+                        <label for="adminId">
+                            Admin ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="adminId"
+                            placeholder="Enter admin ID"
+                        >
+
+                    </div>
+
+
+                    <!-- DEPARTMENT -->
+                    <div class="field admin-field hidden">
+
+                        <label for="department">
+                            Department
+                        </label>
+
+                        <input
+                            type="text"
+                            id="department"
+                            placeholder="Enter department"
+                        >
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+                    <div class="field">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Create password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="field">
+
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Confirm password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- TERMS -->
+                <div class="terms">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            required
+                        >
+
+                        <span>
+                            I agree to the EduChain terms and conditions.
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <!-- BUTTON -->
+                <button
+                    class="signup-btn"
+                    type="submit">
+                    Create Account
+                </button>
+
+
+                <!-- LOGIN -->
+                <p class="login-text">
+
+                    Already have an account?
+
+                    <a href="#">
+                        Login here
+                    </a>
+
+                </p>
+
+
+                <p id="message"></p>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+function selectRole(role, button) {
+
+    // Store selected role
+    document.getElementById("role").value = role;
+
+
+    // Remove active from both buttons
+    document.querySelectorAll(".role").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+
+    // Add active to selected button
+    button.classList.add("active");
+
+
+    const studentFields =
+        document.querySelectorAll(".student-field");
+
+    const adminFields =
+        document.querySelectorAll(".admin-field");
+
+
+    if (role === "student") {
+
+        // Show student fields
+        studentFields.forEach(field => {
+            field.classList.remove("hidden");
+        });
+
+
+        // Hide admin fields
+        adminFields.forEach(field => {
+            field.classList.add("hidden");
+        });
+
+
+        document.getElementById("studentId").required = true;
+        document.getElementById("course").required = true;
+        document.getElementById("college").required = true;
+        document.getElementById("admissionYear").required = true;
+
+        document.getElementById("adminId").required = false;
+        document.getElementById("department").required = false;
+
+    }
+
+    else {
+
+        // Hide student fields
+        studentFields.forEach(field => {
+            field.classList.add("hidden");
+        });
+
+
+        // Show admin fields
+        adminFields.forEach(field => {
+            field.classList.remove("hidden");
+        });
+
+
+        document.getElementById("studentId").required = false;
+        document.getElementById("course").required = false;
+        document.getElementById("college").required = false;
+        document.getElementById("admissionYear").required = false;
+
+        document.getElementById("adminId").required = true;
+        document.getElementById("department").required = true;
+
+    }
+
+}
+
+
+
+document.getElementById("signupForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    const message =
+        document.getElementById("message");
+
+
+    if (password !== confirmPassword) {
+
+        message.textContent =
+            "Passwords do not match.";
+
+        message.className = "error";
+
+        return;
+    }
+
+
+    const role =
+        document.getElementById("role").value;
+
+
+    message.textContent =
+        "Account created successfully as "
+        + role + "!";
+
+    message.className = "success";
+
+});
+
+</script>
+
+</body>
+</html>
