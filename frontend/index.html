@@ -209,7 +209,7 @@
     <main class="main">
       <header class="topbar">
         <div><div class="breadcrumb">Student locker / <span id="breadcrumbPage">Overview</span></div><div class="welcome" id="welcomeTitle">Your records, in one place.</div></div>
-        <div class="top-actions"><button class="wallet-btn" id="walletButton" type="button"><span>◇</span> Connect wallet</button></div>
+        <div class="top-actions"><button class="wallet-btn" id="accountButton" type="button">Sign in</button></div>
       </header>
 
       <section class="page show" id="dashboard">
@@ -218,18 +218,18 @@
           <div class="vault-illustration" aria-hidden="true"><div class="vault-ring"><div class="vault-lock">•</div></div></div>
         </div>
         <div class="stats" aria-label="Locker summary">
-          <div class="stat"><div class="stat-label">Documents in locker</div><div class="stat-value" id="statDocuments">6</div><div class="stat-note">Across 3 record types</div></div>
-          <div class="stat"><div class="stat-label">Institute verified</div><div class="stat-value">5</div><div class="stat-note">Issuer details attached</div></div>
-          <div class="stat"><div class="stat-label">Shared access</div><div class="stat-value" id="statShares">1</div><div class="stat-note">You control every share</div></div>
-          <div class="stat"><div class="stat-label">Wallet connection</div><div class="stat-value" id="statWallet" style="font-size:18px">Not connected</div><div class="stat-note">Optional in this prototype</div></div>
+          <div class="stat"><div class="stat-label">Documents in locker</div><div class="stat-value" id="statDocuments">0</div><div class="stat-note">Across your institute-issued records</div></div>
+          <div class="stat"><div class="stat-label">Blockchain registered</div><div class="stat-value" id="statRegistered">0</div><div class="stat-note">Documents registered by the institute</div></div>
+          <div class="stat"><div class="stat-label">Shared access</div><div class="stat-value" id="statShares">0</div><div class="stat-note">Local prototype shares</div></div>
+          <div class="stat"><div class="stat-label">Account</div><div class="stat-value" id="statWallet" style="font-size:18px">Signed out</div><div class="stat-note">Your locker is private to your account</div></div>
         </div>
         <div class="section-head"><div><h2>Recently added</h2><p>Your latest institute-issued documents</p></div><button class="text-button" type="button" data-go="documents">All documents →</button></div>
         <div class="document-grid" id="recentDocuments"></div>
         <div class="dashboard-lower">
-          <div class="panel"><h3>Recent activity</h3><div class="panel-sub">Updates to your student locker</div><div id="recentActivity"></div><button class="text-button" type="button" data-go="activity">View activity →</button></div>
-          <div class="panel"><h3>Private by design</h3><div class="panel-sub">You choose what gets shared</div><div class="privacy-note"><div class="privacy-mark">◈</div><div><strong>Your records stay yours</strong><p>Only the information you explicitly share is visible to another person. Wallet and contract connections are not active in this prototype.</p></div></div></div>
+          <div class="panel"><h3>Recent documents</h3><div class="panel-sub">Your latest institute-issued records</div><div id="recentActivity"></div><button class="text-button" type="button" data-go="activity">View activity →</button></div>
+          <div class="panel"><h3>Private by design</h3><div class="panel-sub">Your account controls your locker</div><div class="privacy-note"><div class="privacy-mark">◈</div><div><strong>Your records stay yours</strong><p>Your profile and document list are loaded after sign-in. Share-link and record-request controls are local prototypes.</p></div></div></div>
         </div>
-        <div class="demo-banner"><strong>Prototype notice:</strong> These sample records and verification states are illustrative only. No personal documents are stored, no blockchain is queried, and downloaded receipts are demo summaries rather than official files.</div>
+        <div class="demo-banner"><strong>Connected locker:</strong> Sign in with your student account to load your profile and institute-issued documents from EduLocker.</div>
       </section>
 
       <section class="page" id="documents">
@@ -238,22 +238,22 @@
           <button class="filter-button active" data-filter="all" type="button">All records</button><button class="filter-button" data-filter="marksheet" type="button">Marksheets</button><button class="filter-button" data-filter="certificate" type="button">Certificates</button><button class="filter-button" data-filter="identity" type="button">Identity</button>
         </div><label class="search"><span>⌕</span><input id="documentSearch" type="search" placeholder="Search records" aria-label="Search records"></label></div>
         <div class="document-grid" id="allDocuments"></div><div class="empty-state" id="emptyState">No documents match your search. Try another name or record type.</div>
-        <div class="demo-banner"><strong>Retrieval preview:</strong> Opening a record shows its sample metadata. “Download receipt” creates a local demo summary, not an official marksheet or certificate.</div>
+        <div class="demo-banner"><strong>Private records:</strong> Documents and downloads shown here are served by EduLocker for the signed-in student.</div>
       </section>
 
       <section class="page" id="identity">
         <div class="section-head"><div><h2>Student identity</h2><p>Your institute-linked student profile and identity credentials</p></div></div>
         <div class="identity-grid">
-          <div class="panel"><h3>Profile details</h3><div class="panel-sub">Data shown here is sample profile data</div><div class="identity-list">
-            <div class="identity-row"><div><span>Full name</span><strong>Pratici Kotian</strong></div></div>
-            <div class="identity-row"><div><span>Student number</span><strong>STU2026001</strong></div></div>
-            <div class="identity-row"><div><span>Program</span><strong>B.Tech · Computer Science</strong></div></div>
-            <div class="identity-row"><div><span>Institute</span><strong>ABC Institute of Technology</strong></div></div>
-            <div class="identity-row"><div><span>Government ID</span><strong id="identityNumber">XXXX XXXX 1234</strong></div><button class="text-button" id="revealIdentity" type="button">Reveal</button></div>
+          <div class="panel"><h3>Profile details</h3><div class="panel-sub">Student information linked to your signed-in account</div><div class="identity-list">
+            <div class="identity-row"><div><span>Full name</span><strong id="studentName">Sign in to load your profile</strong></div></div>
+            <div class="identity-row"><div><span>Student number</span><strong id="studentNumber">—</strong></div></div>
+            <div class="identity-row"><div><span>Program</span><strong id="studentCourse">—</strong></div></div>
+            <div class="identity-row"><div><span>Account email</span><strong id="studentEmail">—</strong></div></div>
+            <div class="identity-row"><div><span>Academic year</span><strong id="studentYear">—</strong></div></div>
           </div></div>
-          <div class="identity-card"><div class="eyebrow">Verified student credential</div><h3>Pratici Kotian</h3><p>STU2026001</p><p>B.Tech Computer Science</p><p>ABC Institute · Admitted 2024</p><button class="button" type="button" data-record="student-id">View credential</button></div>
+          <div class="identity-card"><div class="eyebrow">Student account</div><h3 id="identityCardName">Student profile</h3><p id="identityCardNumber">—</p><p id="identityCardCourse">—</p><p id="identityCardEmail">Sign in to load your profile</p><button class="button" type="button" data-go="documents">View documents</button></div>
         </div>
-        <div class="demo-banner"><strong>Privacy:</strong> Identity values in this page are fictional examples. Keep government identifiers masked in production and reveal them only for a specific, consented workflow.</div>
+        <div class="demo-banner"><strong>Privacy:</strong> Profile information is loaded only after signing in and is matched to the student account email.</div>
       </section>
 
       <section class="page" id="sharing">
@@ -263,44 +263,36 @@
       </section>
 
       <section class="page" id="activity">
-        <div class="section-head"><div><h2>Locker activity</h2><p>A local timeline of document and access events</p></div></div>
+        <div class="section-head"><div><h2>Locker activity</h2><p>Recent records from your student locker</p></div></div>
         <div class="panel"><h3>Recent updates</h3><div class="panel-sub">Most recent activity first</div><div id="activityList"></div></div>
         <div class="demo-banner"><strong>Prototype notice:</strong> Activity is stored only for this browser session and is not an institute audit log.</div>
       </section>
     </main>
   </div>
 
-  <dialog id="recordDialog" aria-labelledby="recordDialogTitle"><div class="modal-head"><h2 id="recordDialogTitle">Document preview</h2><button class="icon-button" type="button" data-close aria-label="Close preview">×</button></div><div class="modal-body" id="recordPreview"></div><div class="modal-actions"><button class="button" type="button" data-close>Close</button><button class="button primary" id="downloadReceipt" type="button">Download receipt</button></div></dialog>
+  <dialog id="recordDialog" aria-labelledby="recordDialogTitle"><div class="modal-head"><h2 id="recordDialogTitle">Document details</h2><button class="icon-button" type="button" data-close aria-label="Close details">×</button></div><div class="modal-body" id="recordPreview"></div><div class="modal-actions"><button class="button" type="button" data-close>Close</button><a class="button primary" id="downloadDocument" hidden>Download original</a></div></dialog>
+  <dialog id="loginDialog" aria-labelledby="loginDialogTitle"><form id="loginForm"><div class="modal-head"><h2 id="loginDialogTitle">Sign in to your locker</h2><button class="icon-button" type="button" data-close aria-label="Close sign in">×</button></div><div class="modal-body">{% csrf_token %}<label class="form-label" for="loginUsername">Username</label><input class="form-control" id="loginUsername" name="username" autocomplete="username" required><label class="form-label" for="loginPassword">Password</label><input class="form-control" id="loginPassword" name="password" type="password" autocomplete="current-password" required><p class="form-help">Your profile is matched to the email address on your student record.</p></div><div class="modal-actions"><button class="button" type="button" data-close>Cancel</button><button class="button primary" id="loginSubmit" type="submit">Sign in</button></div></form></dialog>
   <dialog id="shareDialog" aria-labelledby="shareDialogTitle"><form id="shareForm"><div class="modal-head"><h2 id="shareDialogTitle">Create a share link</h2><button class="icon-button" type="button" data-close aria-label="Close">×</button></div><div class="modal-body"><label class="form-label" for="shareRecord">Choose a document</label><select class="form-control" id="shareRecord" required></select><label class="form-label" for="shareRecipient">Recipient or purpose</label><input class="form-control" id="shareRecipient" placeholder="e.g. Graduate admissions office" maxlength="80" required><label class="form-label" for="shareExpiry">Access expires</label><select class="form-control" id="shareExpiry"><option>7 days</option><option>30 days</option><option>90 days</option></select><p class="form-help">This creates a simulated share entry in the page. It does not expose or transmit document data.</p></div><div class="modal-actions"><button class="button" type="button" data-close>Cancel</button><button class="button primary" type="submit">Create demo share</button></div></form></dialog>
   <dialog id="requestDialog" aria-labelledby="requestDialogTitle"><form id="requestForm"><div class="modal-head"><h2 id="requestDialogTitle">Request a record</h2><button class="icon-button" type="button" data-close aria-label="Close">×</button></div><div class="modal-body"><label class="form-label" for="requestType">Record type</label><select class="form-control" id="requestType"><option>Marksheet</option><option>Degree certificate</option><option>Student identity credential</option><option>Other institute record</option></select><label class="form-label" for="requestNote">Note to the institute</label><textarea class="form-control" id="requestNote" rows="3" placeholder="Add a semester, year, or helpful detail" maxlength="240"></textarea><p class="form-help">A request preview will be added locally. The institute is not notified in this prototype.</p></div><div class="modal-actions"><button class="button" type="button" data-close>Cancel</button><button class="button primary" type="submit">Save request</button></div></form></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    const records = [
-      { id: 'mark-2025-s5', kind: 'marksheet', label: 'MARKS', title: 'Semester 5 marksheet', subtitle: 'B.Tech Computer Science · 2025–26', issuer: 'ABC Institute of Technology', issued: '12 Jun 2026', credential: 'EDU-MRK-25-005', status: 'Institute verified', detail: 'SGPA 8.6 · Result declared June 2026' },
-      { id: 'degree-enrolment', kind: 'identity', label: 'ID', title: 'Student enrolment credential', subtitle: 'Student identity · Admission 2024', issuer: 'ABC Institute of Technology', issued: '18 Aug 2024', credential: 'EDU-ID-24-001', status: 'Institute verified', detail: 'Student number STU2026001 · B.Tech Computer Science' },
-      { id: 'cert-blockchain', kind: 'certificate', label: 'CERT', title: 'Blockchain technology course', subtitle: 'Course completion · Grade A+', issuer: 'ABC Institute of Technology', issued: '22 Apr 2026', credential: 'EDU-CER-26-014', status: 'Institute verified', detail: 'Completed 40 learning hours · Grade A+' },
-      { id: 'mark-2025-s4', kind: 'marksheet', label: 'MARKS', title: 'Semester 4 marksheet', subtitle: 'B.Tech Computer Science · 2024–25', issuer: 'ABC Institute of Technology', issued: '19 May 2025', credential: 'EDU-MRK-25-004', status: 'Institute verified', detail: 'SGPA 8.7 · Result declared May 2025' },
-      { id: 'cert-athletics', kind: 'certificate', label: 'CERT', title: 'Inter-college athletics', subtitle: 'Participation certificate · 2026', issuer: 'ABC Institute of Technology', issued: '03 Mar 2026', credential: 'EDU-CER-26-009', status: 'Institute verified', detail: 'Inter-college 100m event · Participant' },
-      { id: 'mark-2024-s3', kind: 'marksheet', label: 'MARKS', title: 'Semester 3 marksheet', subtitle: 'B.Tech Computer Science · 2024–25', issuer: 'ABC Institute of Technology', issued: '07 Dec 2024', credential: 'EDU-MRK-24-003', status: 'Pending review', detail: 'SGPA 8.5 · Sample pending state' }
-    ];
+    let records = [];
+    let studentProfile = null;
     const pageLabels = { dashboard: 'Overview', documents: 'My documents', identity: 'Identity', sharing: 'Shared access', activity: 'Activity' };
     const welcomeLabels = { dashboard: 'Your records, in one place.', documents: 'Find the record you need.', identity: 'Your student identity.', sharing: 'You decide who gets access.', activity: 'A clear record of changes.' };
-    const activity = [
-      { mark: '✓', title: 'Semester 5 marksheet added', time: '12 Jun 2026 · ABC Institute of Technology' },
-      { mark: '◈', title: 'Student credential verified', time: '18 Aug 2024 · ABC Institute of Technology' },
-      { mark: '⇧', title: 'Athletics certificate shared', time: '03 Mar 2026 · Expires in 7 days' }
-    ];
+    let activity = [];
     let activeFilter = 'all';
     let activeRecord = null;
     let toastTimer;
-    const shares = [{ id: 1, recordId: 'cert-athletics', recipient: 'Graduate admissions office', expires: '7 days', created: 'Today' }];
+    let isSignedIn = false;
+    const shares = [];
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
     }
     function cardMarkup(record) {
-      const statusClass = record.status === 'Pending review' ? 'status pending' : 'status';
+      const statusClass = record.status === 'Pending blockchain registration' ? 'status pending' : 'status';
       return `<article class="document-card"><div class="doc-top"><div class="doc-type ${record.kind}">${record.label}</div><span class="${statusClass}">● ${record.status}</span></div><h3 class="doc-card-title">${escapeHtml(record.title)}</h3><div class="doc-meta">${escapeHtml(record.subtitle)}<br>Issued ${escapeHtml(record.issued)}</div><div class="doc-footer"><span class="doc-id">${escapeHtml(record.credential)}</span><button class="doc-open" type="button" data-record="${escapeHtml(record.id)}">View record →</button></div></article>`;
     }
     function renderDocuments() {
@@ -310,11 +302,15 @@
       document.getElementById('emptyState').classList.toggle('show', matches.length === 0);
       document.getElementById('recentDocuments').innerHTML = records.slice(0, 3).map(cardMarkup).join('');
       document.getElementById('statDocuments').textContent = records.length;
+      document.getElementById('statRegistered').textContent = records.filter(record => record.status === 'Registered on blockchain').length;
       document.querySelectorAll('[data-record]').forEach(button => button.addEventListener('click', () => openRecord(button.dataset.record)));
       document.getElementById('shareRecord').innerHTML = records.map(record => `<option value="${escapeHtml(record.id)}">${escapeHtml(record.title)}</option>`).join('');
+      document.getElementById('newShare').disabled = records.length === 0;
     }
     function renderActivity() {
-      const markup = activity.map(item => `<div class="activity-row"><div class="activity-mark">${item.mark}</div><div class="activity-copy"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.time)}</span></div></div>`).join('');
+      const markup = activity.length
+        ? activity.map(item => `<div class="activity-row"><div class="activity-mark">${item.mark}</div><div class="activity-copy"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.time)}</span></div></div>`).join('')
+        : '<div class="form-help">Sign in to view your recent document activity.</div>';
       document.getElementById('recentActivity').innerHTML = markup;
       document.getElementById('activityList').innerHTML = markup;
     }
@@ -351,23 +347,85 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
     }
+    function setAccountState(signedIn) {
+      isSignedIn = signedIn;
+      const button = document.getElementById('accountButton');
+      button.textContent = signedIn ? 'Sign out' : 'Sign in';
+      button.classList.toggle('connected', signedIn);
+      document.getElementById('statWallet').textContent = signedIn ? 'Signed in' : 'Signed out';
+    }
+    function renderProfile() {
+      document.getElementById('studentName').textContent = studentProfile.name;
+      document.getElementById('studentNumber').textContent = studentProfile.student_id;
+      document.getElementById('studentCourse').textContent = studentProfile.course;
+      document.getElementById('studentEmail').textContent = studentProfile.email;
+      document.getElementById('studentYear').textContent = studentProfile.year;
+      document.getElementById('identityCardName').textContent = studentProfile.name;
+      document.getElementById('identityCardNumber').textContent = studentProfile.student_id;
+      document.getElementById('identityCardCourse').textContent = studentProfile.course;
+      document.getElementById('identityCardEmail').textContent = studentProfile.email;
+    }
+    async function loadLocker() {
+      const response = await fetch('/api/student-locker/', { headers: { Accept: 'application/json' } });
+      const data = await response.json();
+      if (response.status === 401) {
+        setAccountState(false);
+        return false;
+      }
+      if (!response.ok) throw new Error(data.error || 'Could not load your student locker.');
+
+      studentProfile = data.student;
+      records = data.documents.map(document => {
+        const kind = document.document_type.toLowerCase().includes('mark')
+          ? 'marksheet'
+          : document.document_type.toLowerCase().includes('identity') ? 'identity' : 'certificate';
+        const status = document.status === 'Registered'
+          ? 'Registered on blockchain'
+          : 'Pending blockchain registration';
+        return {
+          id: document.document_id,
+          kind,
+          label: kind === 'marksheet' ? 'MARKS' : kind === 'identity' ? 'ID' : 'CERT',
+          title: document.original_filename || document.document_type,
+          subtitle: `${document.document_type} · ${studentProfile.course}`,
+          issued: new Date(document.uploaded_at).toLocaleDateString(),
+          credential: document.document_id,
+          status,
+          detail: document.original_filename || document.document_type,
+          fileName: document.original_filename || document.document_id,
+          fileUrl: document.file_url,
+          qrCodeUrl: document.qr_code_url,
+          sha256Hash: document.sha256_hash,
+          transactionHash: document.blockchain_tx_hash
+        };
+      });
+      activity = records.map(record => ({
+        mark: record.status === 'Registered on blockchain' ? '✓' : '◷',
+        title: `${record.title} ${record.status === 'Registered on blockchain' ? 'registered' : 'added'}`,
+        time: `${record.issued} · ${record.status}`
+      }));
+      renderProfile();
+      renderDocuments();
+      renderActivity();
+      renderShares();
+      setAccountState(true);
+      return true;
+    }
     function openRecord(recordId) {
       activeRecord = records.find(record => record.id === recordId);
       if (!activeRecord) return;
       document.getElementById('recordDialogTitle').textContent = activeRecord.title;
-      document.getElementById('recordPreview').innerHTML = `<div class="preview-sheet"><span class="preview-stamp">DEMO COPY · NOT AN OFFICIAL DOCUMENT</span><h3>${escapeHtml(activeRecord.title)}</h3><p>${escapeHtml(activeRecord.detail)}</p><div class="preview-details"><div><span>Issued by</span><strong>${escapeHtml(activeRecord.issuer)}</strong></div><div><span>Issue date</span><strong>${escapeHtml(activeRecord.issued)}</strong></div><div><span>Credential ID</span><strong>${escapeHtml(activeRecord.credential)}</strong></div><div><span>Status</span><strong>${escapeHtml(activeRecord.status)}</strong></div></div></div><p class="form-help">This preview contains sample metadata only. The original institute document is not available in this prototype.</p>`;
+      document.getElementById('recordPreview').innerHTML = `<div class="preview-sheet"><span class="preview-stamp">EDULOCKER DOCUMENT</span><h3>${escapeHtml(activeRecord.title)}</h3><p>${escapeHtml(activeRecord.detail)}</p><div class="preview-details"><div><span>Student</span><strong>${escapeHtml(studentProfile.name)}</strong></div><div><span>Uploaded</span><strong>${escapeHtml(activeRecord.issued)}</strong></div><div><span>Document ID</span><strong>${escapeHtml(activeRecord.credential)}</strong></div><div><span>Registration status</span><strong>${escapeHtml(activeRecord.status)}</strong></div><div><span>SHA-256</span><strong>${escapeHtml(activeRecord.sha256Hash || 'Not available')}</strong></div><div><span>Blockchain transaction</span><strong>${escapeHtml(activeRecord.transactionHash || 'Not registered')}</strong></div></div>${activeRecord.qrCodeUrl ? `<p><a href="${escapeHtml(activeRecord.qrCodeUrl)}" target="_blank" rel="noreferrer">View verification QR code</a></p>` : ''}</div><p class="form-help">The original file is available to the signed-in student account only.</p>`;
+      const download = document.getElementById('downloadDocument');
+      download.hidden = !activeRecord.fileUrl;
+      if (activeRecord.fileUrl) {
+        download.href = activeRecord.fileUrl;
+        download.download = activeRecord.fileName;
+      } else {
+        download.removeAttribute('href');
+        download.removeAttribute('download');
+      }
       document.getElementById('recordDialog').showModal();
-    }
-    function downloadReceipt() {
-      if (!activeRecord) return;
-      const lines = ['EDUCHAIN DEMO RECORD RECEIPT', 'NOT AN OFFICIAL DOCUMENT', '', `Record: ${activeRecord.title}`, `Credential ID: ${activeRecord.credential}`, `Issuer: ${activeRecord.issuer}`, `Issued: ${activeRecord.issued}`, `Status: ${activeRecord.status}`, `Details: ${activeRecord.detail}`, '', 'Prototype receipt only. This is not the original institute-issued document.'];
-      const file = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(file);
-      link.download = `${activeRecord.credential.toLowerCase()}-demo-receipt.txt`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-      showToast('Demo receipt downloaded.');
     }
 
     document.querySelectorAll('.nav button').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
@@ -378,21 +436,67 @@
       renderDocuments();
     }));
     document.getElementById('documentSearch').addEventListener('input', renderDocuments);
-    document.getElementById('walletButton').addEventListener('click', event => {
-      const button = event.currentTarget;
-      if (button.classList.contains('connected')) {
-        button.classList.remove('connected');
-        button.innerHTML = '<span>◇</span> Connect wallet';
-        document.getElementById('statWallet').textContent = 'Not connected';
-        showToast('Demo wallet disconnected.');
-      } else {
-        button.classList.add('connected');
-        button.textContent = '0x82…91AC';
-        document.getElementById('statWallet').textContent = 'Connected';
-        showToast('Demo wallet connected. No blockchain is queried.');
+    document.getElementById('accountButton').addEventListener('click', async () => {
+      if (!isSignedIn) {
+        document.getElementById('loginDialog').showModal();
+        return;
+      }
+      const form = document.getElementById('loginForm');
+      try {
+        const response = await fetch('/api/logout/', {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Could not sign out.');
+        studentProfile = null;
+        records = [];
+        activity = [];
+        shares.splice(0);
+        document.getElementById('studentName').textContent = 'Sign in to load your profile';
+        document.getElementById('studentNumber').textContent = '—';
+        document.getElementById('studentCourse').textContent = '—';
+        document.getElementById('studentEmail').textContent = '—';
+        document.getElementById('studentYear').textContent = '—';
+        document.getElementById('identityCardName').textContent = 'Student profile';
+        document.getElementById('identityCardNumber').textContent = '—';
+        document.getElementById('identityCardCourse').textContent = '—';
+        document.getElementById('identityCardEmail').textContent = 'Sign in to load your profile';
+        renderDocuments();
+        renderActivity();
+        renderShares();
+        setAccountState(false);
+        showToast('You have signed out.');
+      } catch (error) {
+        showToast(error.message || 'Could not sign out.');
       }
     });
-    document.getElementById('downloadReceipt').addEventListener('click', downloadReceipt);
+    document.getElementById('loginForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const submitButton = document.getElementById('loginSubmit');
+      submitButton.disabled = true;
+      try {
+        const response = await fetch('/api/login/', {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Sign in failed.');
+        setAccountState(true);
+        const loaded = await loadLocker();
+        if (!loaded) throw new Error('Sign in again to load your student locker.');
+        document.getElementById('loginDialog').close();
+        form.reset();
+        showToast('Your student locker is connected.');
+      } catch (error) {
+        showToast(error.message || 'Could not connect to EduLocker.');
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
     document.getElementById('newShare').addEventListener('click', () => document.getElementById('shareDialog').showModal());
     document.getElementById('requestDocument').addEventListener('click', () => document.getElementById('requestDialog').showModal());
     document.getElementById('shareForm').addEventListener('submit', event => {
@@ -413,12 +517,6 @@
       event.currentTarget.reset();
       showToast('Request saved locally. The institute was not notified.');
     });
-    document.getElementById('revealIdentity').addEventListener('click', event => {
-      const number = document.getElementById('identityNumber');
-      const revealed = number.textContent === 'XXXX XXXX 1234';
-      number.textContent = revealed ? '1234 5678 1234' : 'XXXX XXXX 1234';
-      event.currentTarget.textContent = revealed ? 'Mask' : 'Reveal';
-    });
     document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
     document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('click', event => {
       const bounds = dialog.getBoundingClientRect();
@@ -427,6 +525,7 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
     });
+    loadLocker().catch(error => showToast(error.message || 'Could not connect to EduLocker.'));
     renderDocuments();
     renderActivity();
     renderShares();
