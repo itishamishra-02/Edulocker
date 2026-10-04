@@ -1,509 +1,435 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<meta charset='utf-8'>
-<meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>EduChain Student DApp</title>
-<style>
-:root {
-  color-scheme: light dark;
-  --bg: light-dark(#f4f7fb, #0b1220);
-  --panel: light-dark(#fff, #111827);
-  --text: light-dark(#172033, #f3f4f6);
-  --muted: light-dark(#667085, #9ca3af);
-  --line: light-dark(#e5e7eb, #263244);
-  --blue: #2563eb;
-  --soft: light-dark(#eef4ff, #172554);
-  --green: #15803d;
-}
-* {
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Inter, system-ui, Arial;
-}
-.app {
-  min-height: 100vh;
-  background: var(--bg);
-  display: flex;
-}
-.side {
-  width: 245px;
-  background: light-dark(#111827, #080d18);
-  color: #fff;
-  padding: 25px 18px;
-  position: fixed;
-  inset: 0 auto 0 0;
-}
-.brand {
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 38px;
-}
-.brand span {
-  color: #93c5fd;
-}
-.nav button {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  color: #cbd5e1;
-  text-align: left;
-  padding: 12px 14px;
-  border-radius: 9px;
-  margin: 3px 0;
-  font-size: 14px;
-  cursor: pointer;
-}
-.nav button.active,
-.nav button:hover {
-  background: #2563eb;
-  color: #fff;
-}
-.sidefoot {
-  position: absolute;
-  bottom: 24px;
-  font-size: 12px;
-  color: #9ca3af;
-  line-height: 1.5;
-}
-.main {
-  margin-left: 245px;
-  width: calc(100% - 245px);
-  padding: 28px 38px;
-  max-width: 1450px;
-}
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 22px;
-}
-.eyebrow {
-  font-size: 12px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-.top h1 {
-  margin: 4px 0;
-  font-size: 28px;
-}
-.top p {
-  margin: 0;
-  color: var(--muted);
-}
-.wallet {
-  background: var(--blue);
-  color: #fff;
-  border: 0;
-  padding: 11px 17px;
-  border-radius: 9px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.profile {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 18px;
-  align-items: center;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 22px;
-}
-.avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--soft);
-  font-size: 32px;
-}
-.profile h2 {
-  margin: 0 0 5px;
-}
-.profile p {
-  margin: 4px 0;
-  color: var(--muted);
-}
-.verified {
-  color: var(--green);
-  background: #dcfce7;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 700;
-}
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin: 18px 0;
-}
-.stat, .card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 18px;
-}
-.stat small {
-  color: var(--muted);
-}
-.stat strong {
-  display: block;
-  font-size: 26px;
-  margin-top: 7px;
-}
-.grid {
-  display: grid;
-  grid-template-columns: 1.3fr .7fr;
-  gap: 18px;
-}
-.card h3 {
-  margin: 0 0 5px;
-}
-.sub {
-  color: var(--muted);
-  font-size: 13px;
-  margin-bottom: 16px;
-}
-.timeline {
-  border-left: 2px solid var(--line);
-  padding-left: 18px;
-}
-.item {
-  position: relative;
-  margin: 0 0 18px;
-}
-.item:before {
-  content: '';
-  position: absolute;
-  left: -25px;
-  top: 4px;
-  width: 10px;
-  height: 10px;
-  background: var(--blue);
-  border-radius: 50%;
-}
-.item b {
-  font-size: 14px;
-}
-.item p {
-  margin: 5px 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-.pill {
-  display: inline-block;
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #dcfce7;
-  color: var(--green);
-  font-weight: 700;
-}
-.mini {
-  display: flex;
-  justify-content: space-between;
-  padding: 13px 0;
-  border-top: 1px solid var(--line);
-  font-size: 13px;
-}
-.mini:first-of-type {
-  border-top: 0;
-}
-.actions {
-  display: flex;
-  gap: 9px;
-  flex-wrap: wrap;
-}
-.btn {
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--text);
-  padding: 9px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.btn.primary {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #fff;
-}
-.page {
-  display: none;
-}
-.page.show {
-  display: block;
-}
-.section-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 8px 0 15px;
-}
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.table th, .table td {
-  text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid var(--line);
-}
-.event {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 15px 0;
-  border-bottom: 1px solid var(--line);
-}
-.event:last-child {
-  border-bottom: 0;
-}
-.event h4 {
-  margin: 0 0 4px;
-}
-.event p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-@media(max-width: 850px) {
-  .side { width: 76px; }
-  .brand span, .nav button span, .sidefoot { display: none; }
-  .main { margin-left: 76px; width: calc(100% - 76px); padding: 20px; }
-  .stats { grid-template-columns: repeat(2, 1fr); }
-  .grid { grid-template-columns: 1fr; }
-  .profile { grid-template-columns: auto 1fr; }
-  .verified { grid-column: 2; }
-  .top { gap: 10px; }
-  .top h1 { font-size: 22px; }
-}
-@media(max-width: 560px) {
-  .stats { grid-template-columns: 1fr 1fr; }
-  .profile { grid-template-columns: 1fr; }
-  .verified { grid-column: auto; }
-  .wallet { padding: 9px; }
-  .main { padding: 15px; }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5ef">
+  <title>Educhain | Student Locker</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f4f5ef;
+      --surface: #fff;
+      --surface-soft: #fafbf8;
+      --ink: #202a24;
+      --muted: #727c74;
+      --line: #e3e7df;
+      --forest: #193d32;
+      --forest-soft: #e6eee9;
+      --lime: #c7e38a;
+      --gold: #d7a846;
+      --warning: #8b5a19;
+      --shadow: 0 14px 40px rgba(34, 49, 40, .08);
+      font-family: "Aptos", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background: var(--canvas);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: var(--canvas); }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .app { min-height: 100vh; }
+    .sidebar {
+      position: fixed; inset: 0 auto 0 0; z-index: 3; display: flex; flex-direction: column;
+      width: 248px; padding: 25px 16px 18px; color: #f5f6f2; background: var(--forest);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px; margin-bottom: 44px; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: var(--forest); background: var(--lime); font-weight: 800; }
+    .brand-name { font-family: Georgia, serif; font-size: 20px; letter-spacing: .1px; }
+    .brand-name span { color: var(--lime); }
+    .nav-label { padding: 0 12px; margin: 0 0 10px; color: #aabbb0; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .nav { display: grid; gap: 4px; }
+    .nav button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 43px; padding: 0 12px; border: 0; border-radius: 7px; color: #d5e0d8; background: transparent; text-align: left; font-size: 13px; }
+    .nav button:hover, .nav button.active { color: var(--forest); background: #eff4ed; }
+    .nav-symbol { display: grid; place-items: center; width: 20px; font-size: 16px; }
+    .sidebar-bottom { margin-top: auto; padding: 14px 11px 0; border-top: 1px solid rgba(255,255,255,.15); }
+    .network-label { color: #aabbb0; font-size: 10px; text-transform: uppercase; }
+    .network { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; }
+    .network-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+    .main { width: min(1360px, calc(100% - 248px)); min-height: 100vh; margin-left: 248px; padding: 28px clamp(22px, 4vw, 58px) 56px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 34px; }
+    .breadcrumb { color: var(--muted); font-size: 12px; }
+    .welcome { margin-top: 7px; font-family: Georgia, serif; font-size: 31px; font-weight: 500; line-height: 1.15; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .wallet-btn, .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 15px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--surface); font-size: 12px; font-weight: 700; transition: background .18s, transform .18s; }
+    .wallet-btn:hover, .button:hover { background: var(--surface-soft); transform: translateY(-1px); }
+    .wallet-btn.connected { color: var(--forest); border-color: #b6cabc; background: var(--forest-soft); }
+    .button.primary { color: #fff; border-color: var(--forest); background: var(--forest); }
+    .button.primary:hover { background: #245443; }
+    .button.quiet { border-color: transparent; background: transparent; }
+    .button.danger { color: #9a413b; }
+    .icon-button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--surface); }
+    .icon-button:hover { background: var(--surface-soft); }
+    .page { display: none; animation: enter .24s ease-out; }
+    .page.show { display: block; }
+    @keyframes enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(200px, .7fr); gap: 22px; overflow: hidden; padding: 27px 30px; border-radius: 8px; color: #f5f6f2; background: var(--forest); }
+    .hero::after { position: absolute; right: 13%; bottom: -100px; width: 250px; height: 250px; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; content: ""; box-shadow: 0 0 0 32px rgba(255,255,255,.025), 0 0 0 66px rgba(255,255,255,.025); }
+    .hero-kicker { color: #c7d9ca; font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; }
+    .hero h2 { max-width: 530px; margin: 10px 0 9px; font-family: Georgia, serif; font-size: 27px; font-weight: 500; line-height: 1.2; }
+    .hero p { max-width: 500px; margin: 0; color: #cfdbd1; font-size: 12px; line-height: 1.65; }
+    .hero .button { position: relative; z-index: 1; margin-top: 18px; color: var(--forest); border-color: var(--lime); background: var(--lime); }
+    .vault-illustration { position: relative; z-index: 1; display: grid; align-content: center; justify-items: center; min-height: 150px; }
+    .vault-ring { display: grid; place-items: center; width: 116px; height: 116px; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; box-shadow: 0 0 0 13px rgba(255,255,255,.035), 0 0 0 28px rgba(255,255,255,.025); }
+    .vault-lock { position: relative; display: grid; place-items: center; width: 51px; height: 43px; margin-top: 13px; border: 2px solid var(--lime); border-radius: 8px; color: var(--lime); font-size: 21px; }
+    .vault-lock::before { position: absolute; bottom: 31px; width: 25px; height: 26px; border: 2px solid var(--lime); border-bottom: 0; border-radius: 15px 15px 0 0; content: ""; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 17px 0 26px; }
+    .stat { padding: 15px 17px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); }
+    .stat-label { color: var(--muted); font-size: 11px; }
+    .stat-value { margin-top: 7px; font-family: Georgia, serif; font-size: 25px; }
+    .stat-note { margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 27px 0 13px; }
+    .section-head h2 { margin: 0; font-family: Georgia, serif; font-size: 21px; font-weight: 500; }
+    .section-head p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .text-button { padding: 6px 0; border: 0; color: var(--forest); background: transparent; font-size: 11px; font-weight: 700; }
+    .text-button:hover { text-decoration: underline; }
+    .document-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .document-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); transition: box-shadow .18s, transform .18s; }
+    .document-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .doc-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+    .doc-type { display: grid; place-items: center; width: 39px; height: 43px; border-radius: 5px; color: var(--forest); background: var(--forest-soft); font-size: 9px; font-weight: 800; }
+    .doc-type.id { color: #75571d; background: #f6efd9; }
+    .doc-type.certificate { color: #725044; background: #f4e9e1; }
+    .status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 3px; color: #316447; background: #edf5ee; font-size: 9px; font-weight: 700; white-space: nowrap; }
+    .status.pending { color: var(--warning); background: #fbf1de; }
+    .doc-card-title { overflow: hidden; margin: 13px 0 5px; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .doc-meta { color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .doc-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 11px; border-top: 1px solid var(--line); }
+    .doc-id { overflow: hidden; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .doc-open { border: 0; color: var(--forest); background: transparent; font-size: 10px; font-weight: 700; }
+    .dashboard-lower { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; margin-top: 23px; }
+    .panel { padding: 18px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); }
+    .panel h3 { margin: 0; font-family: Georgia, serif; font-size: 17px; font-weight: 500; }
+    .panel-sub { margin: 5px 0 14px; color: var(--muted); font-size: 10px; }
+    .activity-row { display: flex; gap: 11px; padding: 11px 0; border-top: 1px solid var(--line); }
+    .activity-mark { flex: 0 0 26px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: var(--forest); background: var(--forest-soft); font-size: 11px; }
+    .activity-copy { min-width: 0; }
+    .activity-copy strong { display: block; font-size: 11px; }
+    .activity-copy span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .privacy-note { display: flex; gap: 12px; padding: 14px; border-radius: 6px; background: #f0f4e8; }
+    .privacy-mark { color: var(--forest); font-size: 18px; }
+    .privacy-note strong { display: block; margin-bottom: 4px; font-size: 11px; }
+    .privacy-note p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
+    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 15px; }
+    .filters { display: flex; gap: 5px; flex-wrap: wrap; }
+    .filter-button { min-height: 32px; padding: 0 11px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); background: var(--surface); font-size: 10px; }
+    .filter-button.active { color: #fff; border-color: var(--forest); background: var(--forest); }
+    .search { position: relative; width: min(100%, 255px); }
+    .search input { width: 100%; height: 35px; padding: 0 11px 0 33px; border: 1px solid var(--line); border-radius: 5px; outline-color: var(--forest); background: var(--surface); font-size: 11px; }
+    .search span { position: absolute; top: 8px; left: 11px; color: var(--muted); }
+    .identity-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(240px, .9fr); gap: 15px; }
+    .identity-list { margin-top: 9px; }
+    .identity-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 13px 0; border-top: 1px solid var(--line); }
+    .identity-row span { display: block; color: var(--muted); font-size: 10px; }
+    .identity-row strong { display: block; margin-top: 5px; font-size: 12px; }
+    .identity-card { padding: 20px; border-radius: 7px; color: #fff; background: #305a4b; }
+    .identity-card .eyebrow { color: #c7d9ca; font-size: 10px; }
+    .identity-card h3 { margin: 19px 0 5px; font-family: Georgia, serif; font-size: 20px; font-weight: 500; }
+    .identity-card p { margin: 4px 0; color: #d7e1da; font-size: 11px; }
+    .identity-card .button { margin-top: 16px; color: var(--forest); border-color: var(--lime); background: var(--lime); }
+    .share-list { margin-top: 16px; }
+    .share-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 0; border-top: 1px solid var(--line); }
+    .share-item strong { display: block; font-size: 12px; }
+    .share-item span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .share-item .button { flex: 0 0 auto; }
+    .empty-state { display: none; padding: 35px 18px; border: 1px dashed #cbd4c9; border-radius: 7px; color: var(--muted); text-align: center; font-size: 12px; }
+    .empty-state.show { display: block; }
+    .demo-banner { margin-top: 22px; padding: 11px 14px; border-left: 3px solid var(--gold); color: #6c5b38; background: #fbf6e9; font-size: 10px; line-height: 1.55; }
+    dialog { width: min(480px, calc(100% - 28px)); max-height: min(85vh, 760px); padding: 0; overflow: auto; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface); box-shadow: 0 24px 80px rgba(20, 35, 27, .24); }
+    dialog::backdrop { background: rgba(19, 35, 27, .55); backdrop-filter: blur(2px); }
+    .modal-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 20px 21px 14px; border-bottom: 1px solid var(--line); }
+    .modal-head h2 { margin: 0; font-family: Georgia, serif; font-size: 21px; font-weight: 500; }
+    .modal-body { padding: 18px 21px; }
+    .preview-sheet { padding: 20px; border: 1px solid #d9ded7; background: #fcfcf8; }
+    .preview-stamp { display: inline-block; padding: 5px 7px; border: 1px solid #c38b42; color: #966725; font-size: 9px; font-weight: 800; letter-spacing: .4px; }
+    .preview-sheet h3 { margin: 17px 0 5px; font-family: Georgia, serif; font-size: 18px; }
+    .preview-sheet p { color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .preview-details { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 13px; border-top: 1px solid var(--line); }
+    .preview-details span { display: block; color: var(--muted); font-size: 9px; }
+    .preview-details strong { display: block; margin-top: 4px; font-size: 10px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 0 21px 20px; }
+    .form-label { display: block; margin: 13px 0 6px; font-size: 11px; font-weight: 700; }
+    .form-control { width: 100%; min-height: 38px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; outline-color: var(--forest); background: var(--surface); font-size: 11px; }
+    .form-help { margin: 9px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 8; max-width: min(360px, calc(100vw - 44px)); padding: 12px 16px; border-radius: 6px; color: white; background: var(--forest); box-shadow: var(--shadow); font-size: 12px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .mobile-nav { display: none; }
+    @media (max-width: 1050px) {
+      .document-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero { grid-template-columns: 1fr 190px; }
+    }
+    @media (max-width: 760px) {
+      .sidebar { width: 67px; padding: 20px 9px 14px; }
+      .brand { justify-content: center; padding: 0; margin-bottom: 34px; }
+      .brand-name, .nav-label, .nav button span:not(.nav-symbol), .sidebar-bottom { display: none; }
+      .nav button { justify-content: center; padding: 0; }
+      .nav-symbol { width: auto; font-size: 18px; }
+      .main { width: calc(100% - 67px); margin-left: 67px; padding: 22px 18px 40px; }
+      .topbar { align-items: start; margin-bottom: 23px; }
+      .welcome { font-size: 26px; }
+      .wallet-btn { min-height: 36px; padding: 0 10px; font-size: 10px; }
+      .hero { grid-template-columns: 1fr; padding: 23px; }
+      .vault-illustration { display: none; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .dashboard-lower, .identity-grid { grid-template-columns: 1fr; }
+      .page-toolbar { align-items: stretch; flex-direction: column; }
+      .search { width: 100%; }
+    }
+    @media (max-width: 500px) {
+      .main { padding-right: 13px; padding-left: 13px; }
+      .topbar { gap: 8px; }
+      .breadcrumb { font-size: 10px; }
+      .welcome { font-size: 23px; }
+      .top-actions { gap: 5px; }
+      .document-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: start; }
+      .section-head h2 { font-size: 19px; }
+      .hero h2 { font-size: 24px; }
+      .hero p { font-size: 11px; }
+      .share-item { align-items: start; flex-direction: column; gap: 10px; }
+      .share-item .button { min-height: 34px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
 </head>
 <body>
-  <div class='app'>
-    <aside class='side'>
-      <div class='brand'>🎓 Edu<span>Chain</span></div>
-      <div class='nav'>
-        <button class='active' data-page='dashboard'>🏠 <span>Dashboard</span></button>
-        <button data-page='profile'>👤 <span>My Profile</span></button>
-        <button data-page='academic'>📚 <span>Academic Records</span></button>
-        <button data-page='courses'>🎓 <span>Courses</span></button>
-        <button data-page='certificates'>📜 <span>Certificates</span></button>
-        <button data-page='activities'>🏆 <span>Achievements</span></button>
-        <button data-page='events'>🎉 <span>College Events</span></button>
-        <button data-page='verify'>🔐 <span>Verify Records</span></button>
-      </div>
-      <div class='sidefoot'>ABC Institute of Technology<br>Blockchain Student DApp</div>
+  <div class="app">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><div class="brand-mark">E</div><div class="brand-name">edu<span>chain</span></div></div>
+      <p class="nav-label">Student space</p>
+      <nav class="nav">
+        <button class="active" data-page="dashboard"><span class="nav-symbol">⌂</span><span>Overview</span></button>
+        <button data-page="documents"><span class="nav-symbol">▤</span><span>My documents</span></button>
+        <button data-page="identity"><span class="nav-symbol">◈</span><span>Identity</span></button>
+        <button data-page="sharing"><span class="nav-symbol">⇧</span><span>Shared access</span></button>
+        <button data-page="activity"><span class="nav-symbol">◷</span><span>Activity</span></button>
+      </nav>
+      <div class="sidebar-bottom"><div class="network-label">Prototype network</div><div class="network"><span class="network-dot"></span>Local demo · no contract</div></div>
     </aside>
-    <main class='main'>
-      <div class='top'>
-        <div>
-          <div class='eyebrow'>Student Identity & Records</div>
-          <h1 id='pageTitle'>Student Dashboard</h1>
-          <p>One verified profile for academic and campus achievements.</p>
+    <main class="main">
+      <header class="topbar">
+        <div><div class="breadcrumb">Student locker / <span id="breadcrumbPage">Overview</span></div><div class="welcome" id="welcomeTitle">Your records, in one place.</div></div>
+        <div class="top-actions"><button class="wallet-btn" id="walletButton" type="button"><span>◇</span> Connect wallet</button></div>
+      </header>
+
+      <section class="page show" id="dashboard">
+        <div class="hero">
+          <div><div class="hero-kicker">ABC Institute of Technology · Student locker</div><h2>Every milestone. Safely kept.</h2><p>Find your institute-issued records, check their details, and retrieve a portable record receipt whenever you need it.</p><button class="button" type="button" data-go="documents">Browse my documents <span>→</span></button></div>
+          <div class="vault-illustration" aria-hidden="true"><div class="vault-ring"><div class="vault-lock">•</div></div></div>
         </div>
-        <button class='wallet' id='wallet'>Connect Wallet</button>
-      </div>
-      
-      <section class='page show' id='dashboard'>
-        <div class='profile'>
-          <div class='avatar'>👩‍🎓</div>
-          <div>
-            <h2>Pratici Kotian</h2>
-            <p>STU2026001 · B.Tech Computer Science</p>
-            <p>ABC Institute of Technology · Admission 2024</p>
-          </div>
-          <div class='verified'>✓ Identity Verified</div>
+        <div class="stats" aria-label="Locker summary">
+          <div class="stat"><div class="stat-label">Documents in locker</div><div class="stat-value" id="statDocuments">6</div><div class="stat-note">Across 3 record types</div></div>
+          <div class="stat"><div class="stat-label">Institute verified</div><div class="stat-value">5</div><div class="stat-note">Issuer details attached</div></div>
+          <div class="stat"><div class="stat-label">Shared access</div><div class="stat-value" id="statShares">1</div><div class="stat-note">You control every share</div></div>
+          <div class="stat"><div class="stat-label">Wallet connection</div><div class="stat-value" id="statWallet" style="font-size:18px">Not connected</div><div class="stat-note">Optional in this prototype</div></div>
         </div>
-        <div class='stats'>
-          <div class='stat'><small>Academic Records</small><strong>18</strong></div>
-          <div class='stat'><small>Courses</small><strong>6</strong></div>
-          <div class='stat'><small>Certificates</small><strong>12</strong></div>
-          <div class='stat'><small>Achievements</small><strong>8</strong></div>
+        <div class="section-head"><div><h2>Recently added</h2><p>Your latest institute-issued documents</p></div><button class="text-button" type="button" data-go="documents">All documents →</button></div>
+        <div class="document-grid" id="recentDocuments"></div>
+        <div class="dashboard-lower">
+          <div class="panel"><h3>Recent activity</h3><div class="panel-sub">Updates to your student locker</div><div id="recentActivity"></div><button class="text-button" type="button" data-go="activity">View activity →</button></div>
+          <div class="panel"><h3>Private by design</h3><div class="panel-sub">You choose what gets shared</div><div class="privacy-note"><div class="privacy-mark">◈</div><div><strong>Your records stay yours</strong><p>Only the information you explicitly share is visible to another person. Wallet and contract connections are not active in this prototype.</p></div></div></div>
         </div>
-        <div class='grid'>
-          <div class='card'>
-            <h3>Academic Activity</h3>
-            <div class='sub'>Recent records issued by the institute</div>
-            <div class='timeline'>
-              <div class='item'><b>Semester 5 Result</b><span class='pill'>Verified</span><p>SGPA 8.6 · Issued by ABC Institute</p></div>
-              <div class='item'><b>Blockchain Technology Course</b><span class='pill'>Completed</span><p>Grade A+ · Certificate recorded</p></div>
-              <div class='item'><b>Inter-College Athletics</b><span class='pill'>Verified</span><p>Participation certificate · 2026</p></div>
-            </div>
-          </div>
-          <div class='card'>
-            <h3>Upcoming Events</h3>
-            <div class='sub'>Institute events</div>
-            <div class='mini'><span>🎓 TechFest 2026</span><b>15 Oct</b></div>
-            <div class='mini'><span>🏃 Sports Meet</span><b>20 Oct</b></div>
-            <div class='mini'><span>💻 Hackathon</span><b>05 Nov</b></div>
-            <div class='actions' style='margin-top:14px'><button class='btn primary' data-go='events'>View Events</button></div>
-          </div>
-        </div>
+        <div class="demo-banner"><strong>Prototype notice:</strong> These sample records and verification states are illustrative only. No personal documents are stored, no blockchain is queried, and downloaded receipts are demo summaries rather than official files.</div>
       </section>
 
-      <section class='page' id='profile'>
-        <div class='card'>
-          <h3>My Profile</h3>
-          <div class='sub'>Student identity and institute information</div>
-          <div class='profile' style='box-shadow:none;padding:15px'>
-            <div class='avatar'>👩‍🎓</div>
-            <div>
-              <h2>Pratici Kotian</h2>
-              <p>Student ID: STU2026001</p>
-              <p>B.Tech Computer Science · ABC Institute</p>
-              <p>Aadhaar: [Aadhaar Redacted] · <span class='pill'>Verified</span></p>
-            </div>
-          </div>
-        </div>
+      <section class="page" id="documents">
+        <div class="section-head"><div><h2>My documents</h2><p>Institute records collected in your personal locker</p></div><button class="button" id="requestDocument" type="button">Request a record <span>＋</span></button></div>
+        <div class="page-toolbar"><div class="filters" role="group" aria-label="Filter documents">
+          <button class="filter-button active" data-filter="all" type="button">All records</button><button class="filter-button" data-filter="marksheet" type="button">Marksheets</button><button class="filter-button" data-filter="certificate" type="button">Certificates</button><button class="filter-button" data-filter="identity" type="button">Identity</button>
+        </div><label class="search"><span>⌕</span><input id="documentSearch" type="search" placeholder="Search records" aria-label="Search records"></label></div>
+        <div class="document-grid" id="allDocuments"></div><div class="empty-state" id="emptyState">No documents match your search. Try another name or record type.</div>
+        <div class="demo-banner"><strong>Retrieval preview:</strong> Opening a record shows its sample metadata. “Download receipt” creates a local demo summary, not an official marksheet or certificate.</div>
       </section>
 
-      <section class='page' id='academic'>
-        <div class='card'>
-          <div class='section-title'>
-            <div>
-              <h3>Academic Records</h3>
-              <div class='sub'>Semester-wise results anchored to the institute record</div>
-            </div>
-            <button class='btn primary'>+ Add Record</button>
-          </div>
-          <table class='table'>
-            <tr><th>Semester</th><th>SGPA</th><th>Status</th><th>Action</th></tr>
-            <tr><td>Semester 1</td><td>8.2</td><td><span class='pill'>Verified</span></td><td>View</td></tr>
-            <tr><td>Semester 2</td><td>8.4</td><td><span class='pill'>Verified</span></td><td>View</td></tr>
-            <tr><td>Semester 3</td><td>8.5</td><td><span class='pill'>Verified</span></td><td>View</td></tr>
-            <tr><td>Semester 4</td><td>8.7</td><td><span class='pill'>Verified</span></td><td>View</td></tr>
-            <tr><td>Semester 5</td><td>8.6</td><td><span class='pill'>Verified</span></td><td>View</td></tr>
-          </table>
+      <section class="page" id="identity">
+        <div class="section-head"><div><h2>Student identity</h2><p>Your institute-linked student profile and identity credentials</p></div></div>
+        <div class="identity-grid">
+          <div class="panel"><h3>Profile details</h3><div class="panel-sub">Data shown here is sample profile data</div><div class="identity-list">
+            <div class="identity-row"><div><span>Full name</span><strong>Pratici Kotian</strong></div></div>
+            <div class="identity-row"><div><span>Student number</span><strong>STU2026001</strong></div></div>
+            <div class="identity-row"><div><span>Program</span><strong>B.Tech · Computer Science</strong></div></div>
+            <div class="identity-row"><div><span>Institute</span><strong>ABC Institute of Technology</strong></div></div>
+            <div class="identity-row"><div><span>Government ID</span><strong id="identityNumber">XXXX XXXX 1234</strong></div><button class="text-button" id="revealIdentity" type="button">Reveal</button></div>
+          </div></div>
+          <div class="identity-card"><div class="eyebrow">Verified student credential</div><h3>Pratici Kotian</h3><p>STU2026001</p><p>B.Tech Computer Science</p><p>ABC Institute · Admitted 2024</p><button class="button" type="button" data-record="student-id">View credential</button></div>
         </div>
+        <div class="demo-banner"><strong>Privacy:</strong> Identity values in this page are fictional examples. Keep government identifiers masked in production and reveal them only for a specific, consented workflow.</div>
       </section>
 
-      <section class='page' id='courses'>
-        <div class='card'>
-          <div class='section-title'>
-            <div>
-              <h3>Courses & Certifications</h3>
-              <div class='sub'>Institute-approved courses completed by the student</div>
-            </div>
-            <button class='btn primary'>+ Add Course</button>
-          </div>
-          <div class='mini'><span>Blockchain Technology · A+</span><span class='pill'>Completed</span></div>
-          <div class='mini'><span>Big Data Analytics · A</span><span class='pill'>Completed</span></div>
-          <div class='mini'><span>Python for Data Science · A</span><span class='pill'>Completed</span></div>
-        </div>
+      <section class="page" id="sharing">
+        <div class="section-head"><div><h2>Shared access</h2><p>Review and revoke access you have granted</p></div><button class="button primary" id="newShare" type="button">＋ Create a share link</button></div>
+        <div class="panel"><h3>Active shares</h3><div class="panel-sub">Access is represented locally for this prototype</div><div class="share-list" id="shareList"></div></div>
+        <div class="demo-banner"><strong>Not a live permission:</strong> Share links created here are local demo entries and do not grant access to real files or contract data.</div>
       </section>
 
-      <section class='page' id='certificates'>
-        <div class='card'>
-          <div class='section-title'>
-            <div>
-              <h3>Certificates</h3>
-              <div class='sub'>Academic, technical, sports and cultural certificates</div>
-            </div>
-            <button class='btn primary'>+ Issue Certificate</button>
-          </div>
-          <div class='mini'><span>📜 Blockchain Workshop</span><span class='pill'>Verified</span></div>
-          <div class='mini'><span>🏃 Inter-College Athletics</span><span class='pill'>Verified</span></div>
-          <div class='mini'><span>🎤 Cultural Fest Coordinator</span><span class='pill'>Verified</span></div>
-        </div>
-      </section>
-
-      <section class='page' id='activities'>
-        <div class='card'>
-          <div class='section-title'>
-            <div>
-              <h3>Achievements & Extra-Curricular</h3>
-              <div class='sub'>Verified participation and achievements</div>
-            </div>
-            <button class='btn primary'>+ Add Achievement</button>
-          </div>
-          <div class='mini'><span>🏃 Athletics · Inter-College 100m</span><span class='pill'>2026</span></div>
-          <div class='mini'><span>💻 Hackathon · Participant</span><span class='pill'>2026</span></div>
-          <div class='mini'><span>🎤 Annual Fest · Coordinator</span><span class='pill'>2025</span></div>
-        </div>
-      </section>
-
-      <section class='page' id='events'>
-        <div class='card'>
-          <div class='section-title'>
-            <div>
-              <h3>College Events</h3>
-              <div class='sub'>Discover events and register using the student profile</div>
-            </div>
-            <button class='btn primary'>+ Create Event</button>
-          </div>
-          <div class='event'>
-            <div><h4>🎓 TechFest 2026</h4><p>15 October · Technology Festival</p></div>
-            <button class='btn primary'>Register</button>
-          </div>
-          <div class='event'>
-            <div><h4>🏃 Sports Meet 2026</h4><p>20 October · Annual Institute Sports Event</p></div>
-            <button class='btn primary'>Register</button>
-          </div>
-          <div class='event'>
-            <div><h4>💻 Blockchain Hackathon</h4><p>05 November · Innovation Lab</p></div>
-            <button class='btn primary'>Register</button>
-          </div>
-        </div>
-      </section>
-
-      <section class='page' id='verify'>
-        <div class='card'>
-          <h3>Verify Academic Record</h3>
-          <div class='sub'>Demo verification interface — later this will query the Solidity contract.</div>
-          <div style='display:flex;gap:10px;max-width:600px'>
-            <input id='recordId' placeholder='Enter Record ID' style='flex:1;padding:12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--text)'>
-            <button class='btn primary' id='verifyBtn'>Verify</button>
-          </div>
-          <p id='verifyMsg' style='color:var(--muted)'></p>
-        </div>
+      <section class="page" id="activity">
+        <div class="section-head"><div><h2>Locker activity</h2><p>A local timeline of document and access events</p></div></div>
+        <div class="panel"><h3>Recent updates</h3><div class="panel-sub">Most recent activity first</div><div id="activityList"></div></div>
+        <div class="demo-banner"><strong>Prototype notice:</strong> Activity is stored only for this browser session and is not an institute audit log.</div>
       </section>
     </main>
   </div>
+
+  <dialog id="recordDialog" aria-labelledby="recordDialogTitle"><div class="modal-head"><h2 id="recordDialogTitle">Document preview</h2><button class="icon-button" type="button" data-close aria-label="Close preview">×</button></div><div class="modal-body" id="recordPreview"></div><div class="modal-actions"><button class="button" type="button" data-close>Close</button><button class="button primary" id="downloadReceipt" type="button">Download receipt</button></div></dialog>
+  <dialog id="shareDialog" aria-labelledby="shareDialogTitle"><form id="shareForm"><div class="modal-head"><h2 id="shareDialogTitle">Create a share link</h2><button class="icon-button" type="button" data-close aria-label="Close">×</button></div><div class="modal-body"><label class="form-label" for="shareRecord">Choose a document</label><select class="form-control" id="shareRecord" required></select><label class="form-label" for="shareRecipient">Recipient or purpose</label><input class="form-control" id="shareRecipient" placeholder="e.g. Graduate admissions office" maxlength="80" required><label class="form-label" for="shareExpiry">Access expires</label><select class="form-control" id="shareExpiry"><option>7 days</option><option>30 days</option><option>90 days</option></select><p class="form-help">This creates a simulated share entry in the page. It does not expose or transmit document data.</p></div><div class="modal-actions"><button class="button" type="button" data-close>Cancel</button><button class="button primary" type="submit">Create demo share</button></div></form></dialog>
+  <dialog id="requestDialog" aria-labelledby="requestDialogTitle"><form id="requestForm"><div class="modal-head"><h2 id="requestDialogTitle">Request a record</h2><button class="icon-button" type="button" data-close aria-label="Close">×</button></div><div class="modal-body"><label class="form-label" for="requestType">Record type</label><select class="form-control" id="requestType"><option>Marksheet</option><option>Degree certificate</option><option>Student identity credential</option><option>Other institute record</option></select><label class="form-label" for="requestNote">Note to the institute</label><textarea class="form-control" id="requestNote" rows="3" placeholder="Add a semester, year, or helpful detail" maxlength="240"></textarea><p class="form-help">A request preview will be added locally. The institute is not notified in this prototype.</p></div><div class="modal-actions"><button class="button" type="button" data-close>Cancel</button><button class="button primary" type="submit">Save request</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script>
-    const titles = {
-      dashboard: 'Student Dashboard',
-      profile: 'My Profile',
-      academic: 'Academic Records',
-      courses: 'Courses & Certifications',
-      certificates: 'Certificates',
-      activities: 'Achievements',
-      events: 'College Events',
-      verify: 'Verify Records'
-    };
-    function show(id) {
-      document.querySelectorAll('.page').forEach(x => x.classList.remove('show'));
-      document.getElementById(id).classList.add('show');
-      document.querySelectorAll('.nav button').forEach(x => x.classList.toggle('active', x.dataset.page === id));
-      document.getElementById('pageTitle').textContent = titles[id] || 'Student Dashboard';
+    const records = [
+      { id: 'mark-2025-s5', kind: 'marksheet', label: 'MARKS', title: 'Semester 5 marksheet', subtitle: 'B.Tech Computer Science · 2025–26', issuer: 'ABC Institute of Technology', issued: '12 Jun 2026', credential: 'EDU-MRK-25-005', status: 'Institute verified', detail: 'SGPA 8.6 · Result declared June 2026' },
+      { id: 'degree-enrolment', kind: 'identity', label: 'ID', title: 'Student enrolment credential', subtitle: 'Student identity · Admission 2024', issuer: 'ABC Institute of Technology', issued: '18 Aug 2024', credential: 'EDU-ID-24-001', status: 'Institute verified', detail: 'Student number STU2026001 · B.Tech Computer Science' },
+      { id: 'cert-blockchain', kind: 'certificate', label: 'CERT', title: 'Blockchain technology course', subtitle: 'Course completion · Grade A+', issuer: 'ABC Institute of Technology', issued: '22 Apr 2026', credential: 'EDU-CER-26-014', status: 'Institute verified', detail: 'Completed 40 learning hours · Grade A+' },
+      { id: 'mark-2025-s4', kind: 'marksheet', label: 'MARKS', title: 'Semester 4 marksheet', subtitle: 'B.Tech Computer Science · 2024–25', issuer: 'ABC Institute of Technology', issued: '19 May 2025', credential: 'EDU-MRK-25-004', status: 'Institute verified', detail: 'SGPA 8.7 · Result declared May 2025' },
+      { id: 'cert-athletics', kind: 'certificate', label: 'CERT', title: 'Inter-college athletics', subtitle: 'Participation certificate · 2026', issuer: 'ABC Institute of Technology', issued: '03 Mar 2026', credential: 'EDU-CER-26-009', status: 'Institute verified', detail: 'Inter-college 100m event · Participant' },
+      { id: 'mark-2024-s3', kind: 'marksheet', label: 'MARKS', title: 'Semester 3 marksheet', subtitle: 'B.Tech Computer Science · 2024–25', issuer: 'ABC Institute of Technology', issued: '07 Dec 2024', credential: 'EDU-MRK-24-003', status: 'Pending review', detail: 'SGPA 8.5 · Sample pending state' }
+    ];
+    const pageLabels = { dashboard: 'Overview', documents: 'My documents', identity: 'Identity', sharing: 'Shared access', activity: 'Activity' };
+    const welcomeLabels = { dashboard: 'Your records, in one place.', documents: 'Find the record you need.', identity: 'Your student identity.', sharing: 'You decide who gets access.', activity: 'A clear record of changes.' };
+    const activity = [
+      { mark: '✓', title: 'Semester 5 marksheet added', time: '12 Jun 2026 · ABC Institute of Technology' },
+      { mark: '◈', title: 'Student credential verified', time: '18 Aug 2024 · ABC Institute of Technology' },
+      { mark: '⇧', title: 'Athletics certificate shared', time: '03 Mar 2026 · Expires in 7 days' }
+    ];
+    let activeFilter = 'all';
+    let activeRecord = null;
+    let toastTimer;
+    const shares = [{ id: 1, recordId: 'cert-athletics', recipient: 'Graduate admissions office', expires: '7 days', created: 'Today' }];
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
     }
-    document.querySelectorAll('.nav button').forEach(b => b.onclick = () => show(b.dataset.page));
-    document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
-    document.getElementById('wallet').onclick = () => {
-      document.getElementById('wallet').textContent = '0x82...91AC';
-      document.getElementById('wallet').style.background = '#15803d';
-    };
-    document.getElementById('verifyBtn').onclick = () => {
-      let v = document.getElementById('recordId').value.trim();
-      document.getElementById('verifyMsg').textContent = v ? '✓ Record ' + v + ' is verified by ABC Institute (demo).' : 'Please enter a Record ID.';
-    };
+    function cardMarkup(record) {
+      const statusClass = record.status === 'Pending review' ? 'status pending' : 'status';
+      return `<article class="document-card"><div class="doc-top"><div class="doc-type ${record.kind}">${record.label}</div><span class="${statusClass}">● ${record.status}</span></div><h3 class="doc-card-title">${escapeHtml(record.title)}</h3><div class="doc-meta">${escapeHtml(record.subtitle)}<br>Issued ${escapeHtml(record.issued)}</div><div class="doc-footer"><span class="doc-id">${escapeHtml(record.credential)}</span><button class="doc-open" type="button" data-record="${escapeHtml(record.id)}">View record →</button></div></article>`;
+    }
+    function renderDocuments() {
+      const search = (document.getElementById('documentSearch')?.value || '').trim().toLowerCase();
+      const matches = records.filter(record => (activeFilter === 'all' || record.kind === activeFilter) && `${record.title} ${record.subtitle} ${record.credential} ${record.issuer}`.toLowerCase().includes(search));
+      document.getElementById('allDocuments').innerHTML = matches.map(cardMarkup).join('');
+      document.getElementById('emptyState').classList.toggle('show', matches.length === 0);
+      document.getElementById('recentDocuments').innerHTML = records.slice(0, 3).map(cardMarkup).join('');
+      document.getElementById('statDocuments').textContent = records.length;
+      document.querySelectorAll('[data-record]').forEach(button => button.addEventListener('click', () => openRecord(button.dataset.record)));
+      document.getElementById('shareRecord').innerHTML = records.map(record => `<option value="${escapeHtml(record.id)}">${escapeHtml(record.title)}</option>`).join('');
+    }
+    function renderActivity() {
+      const markup = activity.map(item => `<div class="activity-row"><div class="activity-mark">${item.mark}</div><div class="activity-copy"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.time)}</span></div></div>`).join('');
+      document.getElementById('recentActivity').innerHTML = markup;
+      document.getElementById('activityList').innerHTML = markup;
+    }
+    function renderShares() {
+      const container = document.getElementById('shareList');
+      document.getElementById('statShares').textContent = shares.length;
+      if (!shares.length) {
+        container.innerHTML = '<div class="empty-state show">No active shares. Create one when you need to send a record.</div>';
+        return;
+      }
+      container.innerHTML = shares.map(share => {
+        const record = records.find(item => item.id === share.recordId);
+        return `<div class="share-item"><div><strong>${escapeHtml(record?.title || 'Record')}</strong><span>Shared with ${escapeHtml(share.recipient)} · Expires in ${escapeHtml(share.expires)}</span></div><button class="button danger" type="button" data-revoke="${share.id}">Revoke access</button></div>`;
+      }).join('');
+      container.querySelectorAll('[data-revoke]').forEach(button => button.addEventListener('click', () => {
+        const index = shares.findIndex(share => share.id === Number(button.dataset.revoke));
+        if (index !== -1) shares.splice(index, 1);
+        renderShares();
+        showToast('Demo access revoked.');
+      }));
+    }
+    function showPage(pageId) {
+      if (!pageLabels[pageId]) return;
+      document.querySelectorAll('.page').forEach(page => page.classList.toggle('show', page.id === pageId));
+      document.querySelectorAll('.nav button').forEach(button => button.classList.toggle('active', button.dataset.page === pageId));
+      document.getElementById('breadcrumbPage').textContent = pageLabels[pageId];
+      document.getElementById('welcomeTitle').textContent = welcomeLabels[pageId];
+      if (pageId === 'documents') renderDocuments();
+    }
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+    function openRecord(recordId) {
+      activeRecord = records.find(record => record.id === recordId);
+      if (!activeRecord) return;
+      document.getElementById('recordDialogTitle').textContent = activeRecord.title;
+      document.getElementById('recordPreview').innerHTML = `<div class="preview-sheet"><span class="preview-stamp">DEMO COPY · NOT AN OFFICIAL DOCUMENT</span><h3>${escapeHtml(activeRecord.title)}</h3><p>${escapeHtml(activeRecord.detail)}</p><div class="preview-details"><div><span>Issued by</span><strong>${escapeHtml(activeRecord.issuer)}</strong></div><div><span>Issue date</span><strong>${escapeHtml(activeRecord.issued)}</strong></div><div><span>Credential ID</span><strong>${escapeHtml(activeRecord.credential)}</strong></div><div><span>Status</span><strong>${escapeHtml(activeRecord.status)}</strong></div></div></div><p class="form-help">This preview contains sample metadata only. The original institute document is not available in this prototype.</p>`;
+      document.getElementById('recordDialog').showModal();
+    }
+    function downloadReceipt() {
+      if (!activeRecord) return;
+      const lines = ['EDUCHAIN DEMO RECORD RECEIPT', 'NOT AN OFFICIAL DOCUMENT', '', `Record: ${activeRecord.title}`, `Credential ID: ${activeRecord.credential}`, `Issuer: ${activeRecord.issuer}`, `Issued: ${activeRecord.issued}`, `Status: ${activeRecord.status}`, `Details: ${activeRecord.detail}`, '', 'Prototype receipt only. This is not the original institute-issued document.'];
+      const file = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(file);
+      link.download = `${activeRecord.credential.toLowerCase()}-demo-receipt.txt`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast('Demo receipt downloaded.');
+    }
+
+    document.querySelectorAll('.nav button').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
+    document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.go)));
+    document.querySelectorAll('.filter-button').forEach(button => button.addEventListener('click', () => {
+      activeFilter = button.dataset.filter;
+      document.querySelectorAll('.filter-button').forEach(filter => filter.classList.toggle('active', filter === button));
+      renderDocuments();
+    }));
+    document.getElementById('documentSearch').addEventListener('input', renderDocuments);
+    document.getElementById('walletButton').addEventListener('click', event => {
+      const button = event.currentTarget;
+      if (button.classList.contains('connected')) {
+        button.classList.remove('connected');
+        button.innerHTML = '<span>◇</span> Connect wallet';
+        document.getElementById('statWallet').textContent = 'Not connected';
+        showToast('Demo wallet disconnected.');
+      } else {
+        button.classList.add('connected');
+        button.textContent = '0x82…91AC';
+        document.getElementById('statWallet').textContent = 'Connected';
+        showToast('Demo wallet connected. No blockchain is queried.');
+      }
+    });
+    document.getElementById('downloadReceipt').addEventListener('click', downloadReceipt);
+    document.getElementById('newShare').addEventListener('click', () => document.getElementById('shareDialog').showModal());
+    document.getElementById('requestDocument').addEventListener('click', () => document.getElementById('requestDialog').showModal());
+    document.getElementById('shareForm').addEventListener('submit', event => {
+      event.preventDefault();
+      shares.push({ id: Date.now(), recordId: document.getElementById('shareRecord').value, recipient: document.getElementById('shareRecipient').value.trim(), expires: document.getElementById('shareExpiry').value, created: 'Today' });
+      renderShares();
+      document.getElementById('shareDialog').close();
+      event.currentTarget.reset();
+      showToast('Demo share created. No document was sent.');
+    });
+    document.getElementById('requestForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const type = document.getElementById('requestType').value;
+      const note = document.getElementById('requestNote').value.trim();
+      activity.unshift({ mark: '＋', title: `${type} request saved`, time: note ? `Local demo request · ${note}` : 'Local demo request · Not sent to the institute' });
+      renderActivity();
+      document.getElementById('requestDialog').close();
+      event.currentTarget.reset();
+      showToast('Request saved locally. The institute was not notified.');
+    });
+    document.getElementById('revealIdentity').addEventListener('click', event => {
+      const number = document.getElementById('identityNumber');
+      const revealed = number.textContent === 'XXXX XXXX 1234';
+      number.textContent = revealed ? '1234 5678 1234' : 'XXXX XXXX 1234';
+      event.currentTarget.textContent = revealed ? 'Mask' : 'Reveal';
+    });
+    document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
+    document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('click', event => {
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    }));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+    });
+    renderDocuments();
+    renderActivity();
+    renderShares();
   </script>
-  <script src="/static/locker.js"></script>
 </body>
 </html>
