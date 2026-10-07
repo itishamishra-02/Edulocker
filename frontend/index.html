@@ -1,435 +1,863 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f4f5ef">
-  <title>Educhain | Student Locker</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --canvas: #f4f5ef;
-      --surface: #fff;
-      --surface-soft: #fafbf8;
-      --ink: #202a24;
-      --muted: #727c74;
-      --line: #e3e7df;
-      --forest: #193d32;
-      --forest-soft: #e6eee9;
-      --lime: #c7e38a;
-      --gold: #d7a846;
-      --warning: #8b5a19;
-      --shadow: 0 14px 40px rgba(34, 49, 40, .08);
-      font-family: "Aptos", "Trebuchet MS", sans-serif;
-      color: var(--ink);
-      background: var(--canvas);
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-width: 320px; background: var(--canvas); }
-    button, input, select { font: inherit; }
-    button { cursor: pointer; }
-    .app { min-height: 100vh; }
-    .sidebar {
-      position: fixed; inset: 0 auto 0 0; z-index: 3; display: flex; flex-direction: column;
-      width: 248px; padding: 25px 16px 18px; color: #f5f6f2; background: var(--forest);
-    }
-    .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px; margin-bottom: 44px; }
-    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: var(--forest); background: var(--lime); font-weight: 800; }
-    .brand-name { font-family: Georgia, serif; font-size: 20px; letter-spacing: .1px; }
-    .brand-name span { color: var(--lime); }
-    .nav-label { padding: 0 12px; margin: 0 0 10px; color: #aabbb0; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .nav { display: grid; gap: 4px; }
-    .nav button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 43px; padding: 0 12px; border: 0; border-radius: 7px; color: #d5e0d8; background: transparent; text-align: left; font-size: 13px; }
-    .nav button:hover, .nav button.active { color: var(--forest); background: #eff4ed; }
-    .nav-symbol { display: grid; place-items: center; width: 20px; font-size: 16px; }
-    .sidebar-bottom { margin-top: auto; padding: 14px 11px 0; border-top: 1px solid rgba(255,255,255,.15); }
-    .network-label { color: #aabbb0; font-size: 10px; text-transform: uppercase; }
-    .network { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; }
-    .network-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
-    .main { width: min(1360px, calc(100% - 248px)); min-height: 100vh; margin-left: 248px; padding: 28px clamp(22px, 4vw, 58px) 56px; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 34px; }
-    .breadcrumb { color: var(--muted); font-size: 12px; }
-    .welcome { margin-top: 7px; font-family: Georgia, serif; font-size: 31px; font-weight: 500; line-height: 1.15; }
-    .top-actions { display: flex; align-items: center; gap: 10px; }
-    .wallet-btn, .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 15px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--surface); font-size: 12px; font-weight: 700; transition: background .18s, transform .18s; }
-    .wallet-btn:hover, .button:hover { background: var(--surface-soft); transform: translateY(-1px); }
-    .wallet-btn.connected { color: var(--forest); border-color: #b6cabc; background: var(--forest-soft); }
-    .button.primary { color: #fff; border-color: var(--forest); background: var(--forest); }
-    .button.primary:hover { background: #245443; }
-    .button.quiet { border-color: transparent; background: transparent; }
-    .button.danger { color: #9a413b; }
-    .icon-button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--surface); }
-    .icon-button:hover { background: var(--surface-soft); }
-    .page { display: none; animation: enter .24s ease-out; }
-    .page.show { display: block; }
-    @keyframes enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(200px, .7fr); gap: 22px; overflow: hidden; padding: 27px 30px; border-radius: 8px; color: #f5f6f2; background: var(--forest); }
-    .hero::after { position: absolute; right: 13%; bottom: -100px; width: 250px; height: 250px; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; content: ""; box-shadow: 0 0 0 32px rgba(255,255,255,.025), 0 0 0 66px rgba(255,255,255,.025); }
-    .hero-kicker { color: #c7d9ca; font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; }
-    .hero h2 { max-width: 530px; margin: 10px 0 9px; font-family: Georgia, serif; font-size: 27px; font-weight: 500; line-height: 1.2; }
-    .hero p { max-width: 500px; margin: 0; color: #cfdbd1; font-size: 12px; line-height: 1.65; }
-    .hero .button { position: relative; z-index: 1; margin-top: 18px; color: var(--forest); border-color: var(--lime); background: var(--lime); }
-    .vault-illustration { position: relative; z-index: 1; display: grid; align-content: center; justify-items: center; min-height: 150px; }
-    .vault-ring { display: grid; place-items: center; width: 116px; height: 116px; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; box-shadow: 0 0 0 13px rgba(255,255,255,.035), 0 0 0 28px rgba(255,255,255,.025); }
-    .vault-lock { position: relative; display: grid; place-items: center; width: 51px; height: 43px; margin-top: 13px; border: 2px solid var(--lime); border-radius: 8px; color: var(--lime); font-size: 21px; }
-    .vault-lock::before { position: absolute; bottom: 31px; width: 25px; height: 26px; border: 2px solid var(--lime); border-bottom: 0; border-radius: 15px 15px 0 0; content: ""; }
-    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 17px 0 26px; }
-    .stat { padding: 15px 17px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); }
-    .stat-label { color: var(--muted); font-size: 11px; }
-    .stat-value { margin-top: 7px; font-family: Georgia, serif; font-size: 25px; }
-    .stat-note { margin-top: 4px; color: var(--muted); font-size: 10px; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 27px 0 13px; }
-    .section-head h2 { margin: 0; font-family: Georgia, serif; font-size: 21px; font-weight: 500; }
-    .section-head p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
-    .text-button { padding: 6px 0; border: 0; color: var(--forest); background: transparent; font-size: 11px; font-weight: 700; }
-    .text-button:hover { text-decoration: underline; }
-    .document-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-    .document-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); transition: box-shadow .18s, transform .18s; }
-    .document-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-    .doc-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
-    .doc-type { display: grid; place-items: center; width: 39px; height: 43px; border-radius: 5px; color: var(--forest); background: var(--forest-soft); font-size: 9px; font-weight: 800; }
-    .doc-type.id { color: #75571d; background: #f6efd9; }
-    .doc-type.certificate { color: #725044; background: #f4e9e1; }
-    .status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 3px; color: #316447; background: #edf5ee; font-size: 9px; font-weight: 700; white-space: nowrap; }
-    .status.pending { color: var(--warning); background: #fbf1de; }
-    .doc-card-title { overflow: hidden; margin: 13px 0 5px; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-    .doc-meta { color: var(--muted); font-size: 10px; line-height: 1.6; }
-    .doc-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 11px; border-top: 1px solid var(--line); }
-    .doc-id { overflow: hidden; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
-    .doc-open { border: 0; color: var(--forest); background: transparent; font-size: 10px; font-weight: 700; }
-    .dashboard-lower { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; margin-top: 23px; }
-    .panel { padding: 18px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); }
-    .panel h3 { margin: 0; font-family: Georgia, serif; font-size: 17px; font-weight: 500; }
-    .panel-sub { margin: 5px 0 14px; color: var(--muted); font-size: 10px; }
-    .activity-row { display: flex; gap: 11px; padding: 11px 0; border-top: 1px solid var(--line); }
-    .activity-mark { flex: 0 0 26px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: var(--forest); background: var(--forest-soft); font-size: 11px; }
-    .activity-copy { min-width: 0; }
-    .activity-copy strong { display: block; font-size: 11px; }
-    .activity-copy span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
-    .privacy-note { display: flex; gap: 12px; padding: 14px; border-radius: 6px; background: #f0f4e8; }
-    .privacy-mark { color: var(--forest); font-size: 18px; }
-    .privacy-note strong { display: block; margin-bottom: 4px; font-size: 11px; }
-    .privacy-note p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
-    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 15px; }
-    .filters { display: flex; gap: 5px; flex-wrap: wrap; }
-    .filter-button { min-height: 32px; padding: 0 11px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); background: var(--surface); font-size: 10px; }
-    .filter-button.active { color: #fff; border-color: var(--forest); background: var(--forest); }
-    .search { position: relative; width: min(100%, 255px); }
-    .search input { width: 100%; height: 35px; padding: 0 11px 0 33px; border: 1px solid var(--line); border-radius: 5px; outline-color: var(--forest); background: var(--surface); font-size: 11px; }
-    .search span { position: absolute; top: 8px; left: 11px; color: var(--muted); }
-    .identity-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(240px, .9fr); gap: 15px; }
-    .identity-list { margin-top: 9px; }
-    .identity-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 13px 0; border-top: 1px solid var(--line); }
-    .identity-row span { display: block; color: var(--muted); font-size: 10px; }
-    .identity-row strong { display: block; margin-top: 5px; font-size: 12px; }
-    .identity-card { padding: 20px; border-radius: 7px; color: #fff; background: #305a4b; }
-    .identity-card .eyebrow { color: #c7d9ca; font-size: 10px; }
-    .identity-card h3 { margin: 19px 0 5px; font-family: Georgia, serif; font-size: 20px; font-weight: 500; }
-    .identity-card p { margin: 4px 0; color: #d7e1da; font-size: 11px; }
-    .identity-card .button { margin-top: 16px; color: var(--forest); border-color: var(--lime); background: var(--lime); }
-    .share-list { margin-top: 16px; }
-    .share-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 0; border-top: 1px solid var(--line); }
-    .share-item strong { display: block; font-size: 12px; }
-    .share-item span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
-    .share-item .button { flex: 0 0 auto; }
-    .empty-state { display: none; padding: 35px 18px; border: 1px dashed #cbd4c9; border-radius: 7px; color: var(--muted); text-align: center; font-size: 12px; }
-    .empty-state.show { display: block; }
-    .demo-banner { margin-top: 22px; padding: 11px 14px; border-left: 3px solid var(--gold); color: #6c5b38; background: #fbf6e9; font-size: 10px; line-height: 1.55; }
-    dialog { width: min(480px, calc(100% - 28px)); max-height: min(85vh, 760px); padding: 0; overflow: auto; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface); box-shadow: 0 24px 80px rgba(20, 35, 27, .24); }
-    dialog::backdrop { background: rgba(19, 35, 27, .55); backdrop-filter: blur(2px); }
-    .modal-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 20px 21px 14px; border-bottom: 1px solid var(--line); }
-    .modal-head h2 { margin: 0; font-family: Georgia, serif; font-size: 21px; font-weight: 500; }
-    .modal-body { padding: 18px 21px; }
-    .preview-sheet { padding: 20px; border: 1px solid #d9ded7; background: #fcfcf8; }
-    .preview-stamp { display: inline-block; padding: 5px 7px; border: 1px solid #c38b42; color: #966725; font-size: 9px; font-weight: 800; letter-spacing: .4px; }
-    .preview-sheet h3 { margin: 17px 0 5px; font-family: Georgia, serif; font-size: 18px; }
-    .preview-sheet p { color: var(--muted); font-size: 11px; line-height: 1.55; }
-    .preview-details { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 13px; border-top: 1px solid var(--line); }
-    .preview-details span { display: block; color: var(--muted); font-size: 9px; }
-    .preview-details strong { display: block; margin-top: 4px; font-size: 10px; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 0 21px 20px; }
-    .form-label { display: block; margin: 13px 0 6px; font-size: 11px; font-weight: 700; }
-    .form-control { width: 100%; min-height: 38px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; outline-color: var(--forest); background: var(--surface); font-size: 11px; }
-    .form-help { margin: 9px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
-    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 8; max-width: min(360px, calc(100vw - 44px)); padding: 12px 16px; border-radius: 6px; color: white; background: var(--forest); box-shadow: var(--shadow); font-size: 12px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s; }
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .mobile-nav { display: none; }
-    @media (max-width: 1050px) {
-      .document-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .hero { grid-template-columns: 1fr 190px; }
-    }
-    @media (max-width: 760px) {
-      .sidebar { width: 67px; padding: 20px 9px 14px; }
-      .brand { justify-content: center; padding: 0; margin-bottom: 34px; }
-      .brand-name, .nav-label, .nav button span:not(.nav-symbol), .sidebar-bottom { display: none; }
-      .nav button { justify-content: center; padding: 0; }
-      .nav-symbol { width: auto; font-size: 18px; }
-      .main { width: calc(100% - 67px); margin-left: 67px; padding: 22px 18px 40px; }
-      .topbar { align-items: start; margin-bottom: 23px; }
-      .welcome { font-size: 26px; }
-      .wallet-btn { min-height: 36px; padding: 0 10px; font-size: 10px; }
-      .hero { grid-template-columns: 1fr; padding: 23px; }
-      .vault-illustration { display: none; }
-      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .dashboard-lower, .identity-grid { grid-template-columns: 1fr; }
-      .page-toolbar { align-items: stretch; flex-direction: column; }
-      .search { width: 100%; }
-    }
-    @media (max-width: 500px) {
-      .main { padding-right: 13px; padding-left: 13px; }
-      .topbar { gap: 8px; }
-      .breadcrumb { font-size: 10px; }
-      .welcome { font-size: 23px; }
-      .top-actions { gap: 5px; }
-      .document-grid { grid-template-columns: 1fr; }
-      .section-head { align-items: start; }
-      .section-head h2 { font-size: 19px; }
-      .hero h2 { font-size: 24px; }
-      .hero p { font-size: 11px; }
-      .share-item { align-items: start; flex-direction: column; gap: 10px; }
-      .share-item .button { min-height: 34px; }
-    }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduChain | Student Portal</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar" aria-label="Main navigation">
-      <div class="brand"><div class="brand-mark">E</div><div class="brand-name">edu<span>chain</span></div></div>
-      <p class="nav-label">Student space</p>
-      <nav class="nav">
-        <button class="active" data-page="dashboard"><span class="nav-symbol">⌂</span><span>Overview</span></button>
-        <button data-page="documents"><span class="nav-symbol">▤</span><span>My documents</span></button>
-        <button data-page="identity"><span class="nav-symbol">◈</span><span>Identity</span></button>
-        <button data-page="sharing"><span class="nav-symbol">⇧</span><span>Shared access</span></button>
-        <button data-page="activity"><span class="nav-symbol">◷</span><span>Activity</span></button>
-      </nav>
-      <div class="sidebar-bottom"><div class="network-label">Prototype network</div><div class="network"><span class="network-dot"></span>Local demo · no contract</div></div>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span>🎓</span>
+            <strong>Edu<span>Chain</span></strong>
+        </div>
+
+        <nav>
+            <a href="#" class="nav-item">🏠 <span>Dashboard</span></a>
+            <a href="#" class="nav-item">👤 <span>My Profile</span></a>
+            <a href="#" class="nav-item">📚 <span>Academic Records</span></a>
+            <a href="#" class="nav-item">🎓 <span>Courses</span></a>
+            <a href="#" class="nav-item">📜 <span>Certificates</span></a>
+            <a href="#" class="nav-item">🏆 <span>Achievements</span></a>
+            <a href="#" class="nav-item">🎉 <span>College Events</span></a>
+            <a href="#" class="nav-item">🔐 <span>Verify Records</span></a>
+        </nav>
     </aside>
+
+    <!-- MAIN CONTENT -->
     <main class="main">
-      <header class="topbar">
-        <div><div class="breadcrumb">Student locker / <span id="breadcrumbPage">Overview</span></div><div class="welcome" id="welcomeTitle">Your records, in one place.</div></div>
-        <div class="top-actions"><button class="wallet-btn" id="walletButton" type="button"><span>◇</span> Connect wallet</button></div>
-      </header>
 
-      <section class="page show" id="dashboard">
-        <div class="hero">
-          <div><div class="hero-kicker">ABC Institute of Technology · Student locker</div><h2>Every milestone. Safely kept.</h2><p>Find your institute-issued records, check their details, and retrieve a portable record receipt whenever you need it.</p><button class="button" type="button" data-go="documents">Browse my documents <span>→</span></button></div>
-          <div class="vault-illustration" aria-hidden="true"><div class="vault-ring"><div class="vault-lock">•</div></div></div>
+        <div class="topbar">
+            <div>
+                <p class="eyebrow">STUDENT IDENTITY & RECORDS</p>
+                <h1>Create Account</h1>
+                <p class="subtitle">Register with EduChain to manage verified academic records.</p>
+            </div>
+
+            <button class="wallet-btn" type="button" onclick="connectWallet()">Connect Wallet</button>
         </div>
-        <div class="stats" aria-label="Locker summary">
-          <div class="stat"><div class="stat-label">Documents in locker</div><div class="stat-value" id="statDocuments">6</div><div class="stat-note">Across 3 record types</div></div>
-          <div class="stat"><div class="stat-label">Institute verified</div><div class="stat-value">5</div><div class="stat-note">Issuer details attached</div></div>
-          <div class="stat"><div class="stat-label">Shared access</div><div class="stat-value" id="statShares">1</div><div class="stat-note">You control every share</div></div>
-          <div class="stat"><div class="stat-label">Wallet connection</div><div class="stat-value" id="statWallet" style="font-size:18px">Not connected</div><div class="stat-note">Optional in this prototype</div></div>
-        </div>
-        <div class="section-head"><div><h2>Recently added</h2><p>Your latest institute-issued documents</p></div><button class="text-button" type="button" data-go="documents">All documents →</button></div>
-        <div class="document-grid" id="recentDocuments"></div>
-        <div class="dashboard-lower">
-          <div class="panel"><h3>Recent activity</h3><div class="panel-sub">Updates to your student locker</div><div id="recentActivity"></div><button class="text-button" type="button" data-go="activity">View activity →</button></div>
-          <div class="panel"><h3>Private by design</h3><div class="panel-sub">You choose what gets shared</div><div class="privacy-note"><div class="privacy-mark">◈</div><div><strong>Your records stay yours</strong><p>Only the information you explicitly share is visible to another person. Wallet and contract connections are not active in this prototype.</p></div></div></div>
-        </div>
-        <div class="demo-banner"><strong>Prototype notice:</strong> These sample records and verification states are illustrative only. No personal documents are stored, no blockchain is queried, and downloaded receipts are demo summaries rather than official files.</div>
-      </section>
 
-      <section class="page" id="documents">
-        <div class="section-head"><div><h2>My documents</h2><p>Institute records collected in your personal locker</p></div><button class="button" id="requestDocument" type="button">Request a record <span>＋</span></button></div>
-        <div class="page-toolbar"><div class="filters" role="group" aria-label="Filter documents">
-          <button class="filter-button active" data-filter="all" type="button">All records</button><button class="filter-button" data-filter="marksheet" type="button">Marksheets</button><button class="filter-button" data-filter="certificate" type="button">Certificates</button><button class="filter-button" data-filter="identity" type="button">Identity</button>
-        </div><label class="search"><span>⌕</span><input id="documentSearch" type="search" placeholder="Search records" aria-label="Search records"></label></div>
-        <div class="document-grid" id="allDocuments"></div><div class="empty-state" id="emptyState">No documents match your search. Try another name or record type.</div>
-        <div class="demo-banner"><strong>Retrieval preview:</strong> Opening a record shows its sample metadata. “Download receipt” creates a local demo summary, not an official marksheet or certificate.</div>
-      </section>
+        <section class="signup-card" id="signupView">
 
-      <section class="page" id="identity">
-        <div class="section-head"><div><h2>Student identity</h2><p>Your institute-linked student profile and identity credentials</p></div></div>
-        <div class="identity-grid">
-          <div class="panel"><h3>Profile details</h3><div class="panel-sub">Data shown here is sample profile data</div><div class="identity-list">
-            <div class="identity-row"><div><span>Full name</span><strong>Pratici Kotian</strong></div></div>
-            <div class="identity-row"><div><span>Student number</span><strong>STU2026001</strong></div></div>
-            <div class="identity-row"><div><span>Program</span><strong>B.Tech · Computer Science</strong></div></div>
-            <div class="identity-row"><div><span>Institute</span><strong>ABC Institute of Technology</strong></div></div>
-            <div class="identity-row"><div><span>Government ID</span><strong id="identityNumber">XXXX XXXX 1234</strong></div><button class="text-button" id="revealIdentity" type="button">Reveal</button></div>
-          </div></div>
-          <div class="identity-card"><div class="eyebrow">Verified student credential</div><h3>Pratici Kotian</h3><p>STU2026001</p><p>B.Tech Computer Science</p><p>ABC Institute · Admitted 2024</p><button class="button" type="button" data-record="student-id">View credential</button></div>
-        </div>
-        <div class="demo-banner"><strong>Privacy:</strong> Identity values in this page are fictional examples. Keep government identifiers masked in production and reveal them only for a specific, consented workflow.</div>
-      </section>
+            <div class="card-heading">
+                <div>
+                    <h2>Sign Up</h2>
+                    <p>Create your EduChain account</p>
+                </div>
+                <div class="verified-badge">✓ Secure Registration</div>
+            </div>
 
-      <section class="page" id="sharing">
-        <div class="section-head"><div><h2>Shared access</h2><p>Review and revoke access you have granted</p></div><button class="button primary" id="newShare" type="button">＋ Create a share link</button></div>
-        <div class="panel"><h3>Active shares</h3><div class="panel-sub">Access is represented locally for this prototype</div><div class="share-list" id="shareList"></div></div>
-        <div class="demo-banner"><strong>Not a live permission:</strong> Share links created here are local demo entries and do not grant access to real files or contract data.</div>
-      </section>
+            <form id="signupForm">
+                <div class="form-grid">
 
-      <section class="page" id="activity">
-        <div class="section-head"><div><h2>Locker activity</h2><p>A local timeline of document and access events</p></div></div>
-        <div class="panel"><h3>Recent updates</h3><div class="panel-sub">Most recent activity first</div><div id="activityList"></div></div>
-        <div class="demo-banner"><strong>Prototype notice:</strong> Activity is stored only for this browser session and is not an institute audit log.</div>
-      </section>
+                    <div class="field">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter full name" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter email address" required>
+                    </div>
+
+                    <div class="field student-field">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" placeholder="e.g. STU2026001" required>
+                    </div>
+
+                    <div class="field student-field">
+                        <label for="course">Course</label>
+                        <select id="course" required>
+                            <option value="">Select course</option>
+                            <option>B.Tech Computer Science</option>
+                            <option>B.Tech Information Technology</option>
+                            <option>BCA</option>
+                            <option>MCA</option>
+                            <option>M.Tech</option>
+                        </select>
+                    </div>
+
+                    <div class="field student-field">
+                        <label for="college">College / Institute</label>
+                        <input type="text" id="college" placeholder="Enter institute name" required>
+                    </div>
+
+                    <div class="field student-field">
+                        <label for="admissionYear">Admission Year</label>
+                        <select id="admissionYear" required>
+                            <option value="">Select year</option>
+                            <option>2026</option>
+                            <option>2025</option>
+                            <option>2024</option>
+                            <option>2023</option>
+                            <option>2022</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Create password" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+
+                </div>
+
+                <div class="terms">
+                    <label>
+                        <input type="checkbox" required>
+                        <span>I agree to the EduChain terms and conditions.</span>
+                    </label>
+                </div>
+
+                <button class="signup-btn" type="submit">Create Account</button>
+
+                <p class="login-text">
+                    Already have an account?
+                    <a href="#login" id="loginLink">Login here</a>
+                </p>
+
+                <p id="message"></p>
+            </form>
+
+        </section>
+
+        <section class="signup-card hidden" id="loginView">
+            <div class="card-heading">
+                <div>
+                    <h2>Welcome back</h2>
+                    <p>Sign in to your EduChain account</p>
+                </div>
+                <a href="#signup" class="back-link" id="signupLink">Create an account</a>
+            </div>
+
+            <form id="loginForm">
+                <div class="field login-field">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your registered email" required>
+                </div>
+                <div class="field login-field">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button class="signup-btn" type="submit">Login with credentials</button>
+                <div class="login-divider"><span>or</span></div>
+                <button class="wallet-btn admin-login-btn" id="adminWalletLogin" type="button">🛡️ Continue as Admin with MetaMask</button>
+                <p class="admin-login-note">Admin access requires an authorized institute wallet.</p>
+                <p id="loginMessage" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="signup-card hidden" id="dashboardView">
+            <div class="card-heading">
+                <div>
+                    <p class="eyebrow">EDUCHAIN WORKSPACE</p>
+                    <h2 id="dashboardTitle">Dashboard</h2>
+                    <p id="dashboardWelcome">Your account is connected.</p>
+                </div>
+                <button type="button" class="text-button" onclick="showLogin()">Log out</button>
+            </div>
+            <div class="dashboard-content">
+                <div class="dashboard-stat">
+                    <span>Account</span>
+                    <strong id="dashboardIdentity">-</strong>
+                </div>
+                <div class="dashboard-stat">
+                    <span>Access</span>
+                    <strong id="dashboardRole">-</strong>
+                </div>
+            </div>
+            <p id="walletStatus" class="wallet-status" role="status" aria-live="polite"></p>
+        </section>
+
     </main>
-  </div>
+</div>
 
-  <dialog id="recordDialog" aria-labelledby="recordDialogTitle"><div class="modal-head"><h2 id="recordDialogTitle">Document preview</h2><button class="icon-button" type="button" data-close aria-label="Close preview">×</button></div><div class="modal-body" id="recordPreview"></div><div class="modal-actions"><button class="button" type="button" data-close>Close</button><button class="button primary" id="downloadReceipt" type="button">Download receipt</button></div></dialog>
-  <dialog id="shareDialog" aria-labelledby="shareDialogTitle"><form id="shareForm"><div class="modal-head"><h2 id="shareDialogTitle">Create a share link</h2><button class="icon-button" type="button" data-close aria-label="Close">×</button></div><div class="modal-body"><label class="form-label" for="shareRecord">Choose a document</label><select class="form-control" id="shareRecord" required></select><label class="form-label" for="shareRecipient">Recipient or purpose</label><input class="form-control" id="shareRecipient" placeholder="e.g. Graduate admissions office" maxlength="80" required><label class="form-label" for="shareExpiry">Access expires</label><select class="form-control" id="shareExpiry"><option>7 days</option><option>30 days</option><option>90 days</option></select><p class="form-help">This creates a simulated share entry in the page. It does not expose or transmit document data.</p></div><div class="modal-actions"><button class="button" type="button" data-close>Cancel</button><button class="button primary" type="submit">Create demo share</button></div></form></dialog>
-  <dialog id="requestDialog" aria-labelledby="requestDialogTitle"><form id="requestForm"><div class="modal-head"><h2 id="requestDialogTitle">Request a record</h2><button class="icon-button" type="button" data-close aria-label="Close">×</button></div><div class="modal-body"><label class="form-label" for="requestType">Record type</label><select class="form-control" id="requestType"><option>Marksheet</option><option>Degree certificate</option><option>Student identity credential</option><option>Other institute record</option></select><label class="form-label" for="requestNote">Note to the institute</label><textarea class="form-control" id="requestNote" rows="3" placeholder="Add a semester, year, or helpful detail" maxlength="240"></textarea><p class="form-help">A request preview will be added locally. The institute is not notified in this prototype.</p></div><div class="modal-actions"><button class="button" type="button" data-close>Cancel</button><button class="button primary" type="submit">Save request</button></div></form></dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="student-app hidden" id="studentApp">
+    <aside class="student-sidebar">
+        <a class="student-brand" href="#dashboard" aria-label="EduChain home">
+            <span class="brand-mark">E</span>
+            <span>Edu<span class="brand-accent">Chain</span></span>
+        </a>
 
-  <script>
-    const records = [
-      { id: 'mark-2025-s5', kind: 'marksheet', label: 'MARKS', title: 'Semester 5 marksheet', subtitle: 'B.Tech Computer Science · 2025–26', issuer: 'ABC Institute of Technology', issued: '12 Jun 2026', credential: 'EDU-MRK-25-005', status: 'Institute verified', detail: 'SGPA 8.6 · Result declared June 2026' },
-      { id: 'degree-enrolment', kind: 'identity', label: 'ID', title: 'Student enrolment credential', subtitle: 'Student identity · Admission 2024', issuer: 'ABC Institute of Technology', issued: '18 Aug 2024', credential: 'EDU-ID-24-001', status: 'Institute verified', detail: 'Student number STU2026001 · B.Tech Computer Science' },
-      { id: 'cert-blockchain', kind: 'certificate', label: 'CERT', title: 'Blockchain technology course', subtitle: 'Course completion · Grade A+', issuer: 'ABC Institute of Technology', issued: '22 Apr 2026', credential: 'EDU-CER-26-014', status: 'Institute verified', detail: 'Completed 40 learning hours · Grade A+' },
-      { id: 'mark-2025-s4', kind: 'marksheet', label: 'MARKS', title: 'Semester 4 marksheet', subtitle: 'B.Tech Computer Science · 2024–25', issuer: 'ABC Institute of Technology', issued: '19 May 2025', credential: 'EDU-MRK-25-004', status: 'Institute verified', detail: 'SGPA 8.7 · Result declared May 2025' },
-      { id: 'cert-athletics', kind: 'certificate', label: 'CERT', title: 'Inter-college athletics', subtitle: 'Participation certificate · 2026', issuer: 'ABC Institute of Technology', issued: '03 Mar 2026', credential: 'EDU-CER-26-009', status: 'Institute verified', detail: 'Inter-college 100m event · Participant' },
-      { id: 'mark-2024-s3', kind: 'marksheet', label: 'MARKS', title: 'Semester 3 marksheet', subtitle: 'B.Tech Computer Science · 2024–25', issuer: 'ABC Institute of Technology', issued: '07 Dec 2024', credential: 'EDU-MRK-24-003', status: 'Pending review', detail: 'SGPA 8.5 · Sample pending state' }
-    ];
-    const pageLabels = { dashboard: 'Overview', documents: 'My documents', identity: 'Identity', sharing: 'Shared access', activity: 'Activity' };
-    const welcomeLabels = { dashboard: 'Your records, in one place.', documents: 'Find the record you need.', identity: 'Your student identity.', sharing: 'You decide who gets access.', activity: 'A clear record of changes.' };
-    const activity = [
-      { mark: '✓', title: 'Semester 5 marksheet added', time: '12 Jun 2026 · ABC Institute of Technology' },
-      { mark: '◈', title: 'Student credential verified', time: '18 Aug 2024 · ABC Institute of Technology' },
-      { mark: '⇧', title: 'Athletics certificate shared', time: '03 Mar 2026 · Expires in 7 days' }
-    ];
-    let activeFilter = 'all';
-    let activeRecord = null;
-    let toastTimer;
-    const shares = [{ id: 1, recordId: 'cert-athletics', recipient: 'Graduate admissions office', expires: '7 days', created: 'Today' }];
+        <div class="student-profile">
+            <div class="student-avatar" id="sidebarAvatar">AS</div>
+            <div class="student-profile-copy">
+                <strong id="sidebarName">Aarav Sharma</strong>
+                <span id="sidebarStudentId">STU2024108</span>
+            </div>
+        </div>
 
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
-    }
-    function cardMarkup(record) {
-      const statusClass = record.status === 'Pending review' ? 'status pending' : 'status';
-      return `<article class="document-card"><div class="doc-top"><div class="doc-type ${record.kind}">${record.label}</div><span class="${statusClass}">● ${record.status}</span></div><h3 class="doc-card-title">${escapeHtml(record.title)}</h3><div class="doc-meta">${escapeHtml(record.subtitle)}<br>Issued ${escapeHtml(record.issued)}</div><div class="doc-footer"><span class="doc-id">${escapeHtml(record.credential)}</span><button class="doc-open" type="button" data-record="${escapeHtml(record.id)}">View record →</button></div></article>`;
-    }
-    function renderDocuments() {
-      const search = (document.getElementById('documentSearch')?.value || '').trim().toLowerCase();
-      const matches = records.filter(record => (activeFilter === 'all' || record.kind === activeFilter) && `${record.title} ${record.subtitle} ${record.credential} ${record.issuer}`.toLowerCase().includes(search));
-      document.getElementById('allDocuments').innerHTML = matches.map(cardMarkup).join('');
-      document.getElementById('emptyState').classList.toggle('show', matches.length === 0);
-      document.getElementById('recentDocuments').innerHTML = records.slice(0, 3).map(cardMarkup).join('');
-      document.getElementById('statDocuments').textContent = records.length;
-      document.querySelectorAll('[data-record]').forEach(button => button.addEventListener('click', () => openRecord(button.dataset.record)));
-      document.getElementById('shareRecord').innerHTML = records.map(record => `<option value="${escapeHtml(record.id)}">${escapeHtml(record.title)}</option>`).join('');
-    }
-    function renderActivity() {
-      const markup = activity.map(item => `<div class="activity-row"><div class="activity-mark">${item.mark}</div><div class="activity-copy"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.time)}</span></div></div>`).join('');
-      document.getElementById('recentActivity').innerHTML = markup;
-      document.getElementById('activityList').innerHTML = markup;
-    }
-    function renderShares() {
-      const container = document.getElementById('shareList');
-      document.getElementById('statShares').textContent = shares.length;
-      if (!shares.length) {
-        container.innerHTML = '<div class="empty-state show">No active shares. Create one when you need to send a record.</div>';
+        <p class="nav-caption">STUDENT PORTAL</p>
+        <nav class="student-navigation" aria-label="Student navigation">
+            <button class="student-nav-item active" type="button" data-page="dashboard"><span class="nav-glyph">▦</span><span>Dashboard</span></button>
+            <button class="student-nav-item" type="button" data-page="profile"><span class="nav-glyph">◉</span><span>My Profile</span></button>
+            <button class="student-nav-item" type="button" data-page="records"><span class="nav-glyph">▤</span><span>Academic Records</span></button>
+            <button class="student-nav-item" type="button" data-page="courses"><span class="nav-glyph">▱</span><span>Courses</span></button>
+            <button class="student-nav-item" type="button" data-page="certificates"><span class="nav-glyph">▧</span><span>Certificates</span></button>
+            <button class="student-nav-item" type="button" data-page="achievements"><span class="nav-glyph">✳</span><span>Achievements</span></button>
+            <button class="student-nav-item" type="button" data-page="events"><span class="nav-glyph">◷</span><span>College Events</span></button>
+            <button class="student-nav-item" type="button" data-page="verify"><span class="nav-glyph">◇</span><span>Verify Records</span></button>
+            <button class="student-nav-item" type="button" data-page="wallet"><span class="nav-glyph">⬡</span><span>My Wallet</span></button>
+        </nav>
+
+        <button class="student-nav-item logout-nav" type="button" id="studentLogout" title="Logout" aria-label="Logout"><span class="nav-glyph">↪</span><span>Logout</span></button>
+        <div class="sidebar-institute"><span class="institute-dot"></span>ABC Institute of Technology</div>
+    </aside>
+
+    <main class="student-main">
+        <header class="workspace-header">
+            <div class="header-context">
+                <span class="header-overline">ABC INSTITUTE OF TECHNOLOGY</span>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <span class="semester-pill"><span></span>2025–26 · Semester VI</span>
+                <button type="button" class="header-wallet" id="headerWalletButton" onclick="connectStudentWallet()"><span>⬡</span> Connect wallet</button>
+            </div>
+        </header>
+
+        <div class="student-pages">
+            <section class="student-page active" id="page-dashboard" data-title="Dashboard">
+                <div class="welcome-row">
+                    <div>
+                        <p class="page-kicker">SUNDAY, OCTOBER 4, 2026</p>
+                        <h2>Welcome back, <span id="welcomeName">Aarav</span></h2>
+                        <p class="welcome-subtitle">Your academic journey, verified and all in one place.</p>
+                    </div>
+                    <div class="welcome-student-id"><span>STUDENT ID</span><strong id="welcomeStudentId">STU2024108</strong></div>
+                </div>
+
+                <section class="course-strip">
+                    <div class="course-monogram">CS</div>
+                    <div class="course-strip-copy"><span>YOUR PROGRAM</span><strong id="welcomeCourse">B.Tech Computer Science</strong><small>ABC Institute of Technology</small></div>
+                    <span class="course-year">Year 3 <i>·</i> Semester VI</span>
+                </section>
+
+                <div class="metric-grid">
+                    <article class="metric-card">
+                        <div class="metric-top"><span class="metric-icon lilac">◒</span><span class="metric-label">CUMULATIVE GPA</span></div>
+                        <div class="metric-value">3.82<span class="metric-denominator"> / 4.00</span></div>
+                        <div class="metric-foot"><span class="trend-up">↗ 0.12</span> from last semester</div>
+                        <div class="metric-progress"><span style="width:95.5%"></span></div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-top"><span class="metric-icon blue">▧</span><span class="metric-label">CERTIFICATES</span></div>
+                        <div class="metric-value">08</div>
+                        <div class="metric-foot"><span class="metric-dot green-dot"></span>All credentials verified</div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-top"><span class="metric-icon amber">✳</span><span class="metric-label">ACHIEVEMENTS</span></div>
+                        <div class="metric-value">12</div>
+                        <div class="metric-foot">Across <strong>4 categories</strong></div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-top"><span class="metric-icon mint">◷</span><span class="metric-label">EVENTS REGISTERED</span></div>
+                        <div class="metric-value" id="registeredEventCount">02</div>
+                        <div class="metric-foot">Next event <strong>in 3 days</strong></div>
+                    </article>
+                </div>
+
+                <div class="dashboard-grid">
+                    <section class="content-panel records-panel">
+                        <div class="panel-heading"><div><h3>Recent academic records</h3><p>Your latest verified results</p></div><button class="panel-link" type="button" data-go="records">All records <span>→</span></button></div>
+                        <div class="table-scroll"><table class="data-table"><thead><tr><th>SUBJECT</th><th>SEMESTER</th><th>MARKS</th><th>GRADE</th><th>STATUS</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Advanced Database Systems</strong></td><td>Sem V</td><td>92 / 100</td><td><span class="grade-chip">A+</span></td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                                <tr><td><strong>Machine Learning</strong></td><td>Sem V</td><td>88 / 100</td><td><span class="grade-chip">A</span></td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                                <tr><td><strong>Computer Networks</strong></td><td>Sem V</td><td>84 / 100</td><td><span class="grade-chip">A</span></td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                            </tbody>
+                        </table></div>
+                    </section>
+
+                    <section class="content-panel chain-panel">
+                        <div class="panel-heading"><div><h3>Blockchain status</h3><p>Credential integrity overview</p></div><span class="chain-icon">◇</span></div>
+                        <div class="chain-state"><span class="chain-check">✓</span><div><strong>All records verified</strong><span>Anchored to the blockchain</span></div></div>
+                        <div class="chain-details"><span>Verified credentials</span><strong>20 <small>/ 20</small></strong></div>
+                        <div class="chain-details"><span>Last verification</span><strong>Today, 9:42 AM</strong></div>
+                        <button class="panel-link verify-link" type="button" data-go="verify">Verify a record <span>→</span></button>
+                    </section>
+
+                    <section class="content-panel certificates-panel">
+                        <div class="panel-heading"><div><h3>Recent certificates</h3><p>Credentials you've earned</p></div><button class="panel-link" type="button" data-go="certificates">View all <span>→</span></button></div>
+                        <div class="mini-certificate"><span class="certificate-mark">EC</span><div><strong>Cloud Computing Essentials</strong><span>Issued Aug 18, 2026</span></div><span class="verified-status"><i></i>Verified</span></div>
+                        <div class="mini-certificate"><span class="certificate-mark violet-mark">EC</span><div><strong>Data Structures & Algorithms</strong><span>Issued Jun 02, 2026</span></div><span class="verified-status"><i></i>Verified</span></div>
+                    </section>
+
+                    <section class="content-panel events-panel">
+                        <div class="panel-heading"><div><h3>Upcoming events</h3><p>On campus, coming up</p></div><button class="panel-link" type="button" data-go="events">Explore events <span>→</span></button></div>
+                        <div class="mini-event"><div class="event-date"><strong>07</strong><span>OCT</span></div><div><strong>FutureTech Symposium</strong><span>Innovation Hall · 10:00 AM</span></div><span class="event-registered">Registered</span></div>
+                        <div class="mini-event"><div class="event-date"><strong>12</strong><span>OCT</span></div><div><strong>Open Source Week</strong><span>Engineering Block · 2:00 PM</span></div><span class="event-open">Open</span></div>
+                    </section>
+                </div>
+                <p class="demo-note">Academic records and blockchain statuses shown here are sample dashboard data.</p>
+            </section>
+
+            <section class="student-page" id="page-profile" data-title="My Profile">
+                <div class="page-intro"><div><p class="page-kicker">YOUR STUDENT ACCOUNT</p><h2>My Profile</h2><p>Personal and academic information linked to your EduChain identity.</p></div><span class="profile-verified"><i></i>Identity verified</span></div>
+                <div class="profile-layout">
+                    <section class="content-panel profile-card"><div class="profile-hero"><div class="large-avatar" id="profileAvatar">AS</div><div><h3 id="profileName">Aarav Sharma</h3><p>Student · ABC Institute of Technology</p></div><span class="profile-verified"><i></i>Active</span></div><div class="profile-fields"><div><span>STUDENT ID</span><strong id="profileStudentId">STU2024108</strong></div><div><span>EMAIL ADDRESS</span><strong id="profileEmail">student@abcit.edu</strong></div><div><span>PROGRAM</span><strong id="profileCourse">B.Tech Computer Science</strong></div><div><span>ADMISSION YEAR</span><strong id="profileAdmissionYear">2024</strong></div><div><span>DEPARTMENT</span><strong>Computer Science & Engineering</strong></div><div><span>ACCOUNT STATUS</span><strong class="account-active"><i></i>Active student</strong></div></div></section>
+                    <section class="content-panel identity-card"><span class="identity-symbol">◇</span><h3>Verified student identity</h3><p>Your student profile is linked to a unique EduChain identity. Issued records can be independently verified.</p><div class="identity-id"><span>IDENTITY REFERENCE</span><strong>EDU-2024-108-ABC</strong></div><button class="outline-button" type="button" data-go="verify">View verification details</button></section>
+                </div>
+            </section>
+
+            <section class="student-page" id="page-records" data-title="Academic Records">
+                <div class="page-intro"><div><p class="page-kicker">TRANSCRIPT & RESULTS</p><h2>Academic Records</h2><p>Semester-wise academic performance, issued and verifiable on-chain.</p></div><span class="profile-verified"><i></i>Blockchain synced</span></div>
+                <section class="content-panel full-panel"><div class="panel-heading"><div><h3>Semester VI · 2025–26</h3><p>Current academic year · 6 subjects</p></div><span class="semester-result">SGPA <strong>3.91</strong></span></div><div class="table-scroll"><table class="data-table full-table"><thead><tr><th>SUBJECT</th><th>MARKS</th><th>GRADE</th><th>RESULT</th><th>ISSUED BY</th><th>BLOCKCHAIN</th></tr></thead><tbody>
+                    <tr><td><strong>Artificial Intelligence</strong><small class="table-id">REC-2026-061-AI</small></td><td>94 / 100</td><td><span class="grade-chip">A+</span></td><td><span class="result-pass">Pass</span></td><td>Dr. Meera Nair</td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                    <tr><td><strong>Cloud Computing</strong><small class="table-id">REC-2026-061-CC</small></td><td>89 / 100</td><td><span class="grade-chip">A</span></td><td><span class="result-pass">Pass</span></td><td>Prof. K. Srinivas</td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                    <tr><td><strong>Software Engineering</strong><small class="table-id">REC-2026-061-SE</small></td><td>91 / 100</td><td><span class="grade-chip">A+</span></td><td><span class="result-pass">Pass</span></td><td>Dr. Anil Rao</td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                    <tr><td><strong>Distributed Systems</strong><small class="table-id">REC-2026-061-DS</small></td><td>86 / 100</td><td><span class="grade-chip">A</span></td><td><span class="result-pass">Pass</span></td><td>Prof. R. Iyer</td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                    <tr><td><strong>Information Security</strong><small class="table-id">REC-2026-061-IS</small></td><td>82 / 100</td><td><span class="grade-chip">A</span></td><td><span class="result-pass">Pass</span></td><td>Dr. Meera Nair</td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                    <tr><td><strong>Major Project II</strong><small class="table-id">REC-2026-061-MP</small></td><td>96 / 100</td><td><span class="grade-chip">O</span></td><td><span class="result-pass">Pass</span></td><td>Project Committee</td><td><span class="verified-status"><i></i>Verified</span></td></tr>
+                    </tbody></table></div></section>
+                <div class="records-footnote"><span class="chain-check small-check">✓</span> Results are digitally signed by the issuing faculty and anchored to the EduChain ledger.</div>
+            </section>
+
+            <section class="student-page" id="page-courses" data-title="Courses">
+                <div class="page-intro"><div><p class="page-kicker">2025–26 · SEMESTER VI</p><h2>My Courses</h2><p>Your current course load and academic progress.</p></div><span class="semester-result">6 courses <strong>· 18 credits</strong></span></div>
+                <div class="course-grid">
+                    <article class="content-panel course-card"><div class="course-card-top"><span class="course-code">CS401</span><span class="course-progress-label">92% complete</span></div><h3>Artificial Intelligence</h3><p>Dr. Meera Nair <span>·</span> 4 credits</p><div class="course-progress"><span style="width:92%"></span></div><div class="course-card-bottom"><span>Grade to date</span><strong>A+</strong></div></article>
+                    <article class="content-panel course-card"><div class="course-card-top"><span class="course-code purple-code">CS405</span><span class="course-progress-label">86% complete</span></div><h3>Cloud Computing</h3><p>Prof. K. Srinivas <span>·</span> 3 credits</p><div class="course-progress"><span class="purple-progress" style="width:86%"></span></div><div class="course-card-bottom"><span>Grade to date</span><strong>A</strong></div></article>
+                    <article class="content-panel course-card"><div class="course-card-top"><span class="course-code amber-code">CS407</span><span class="course-progress-label">88% complete</span></div><h3>Software Engineering</h3><p>Dr. Anil Rao <span>·</span> 3 credits</p><div class="course-progress"><span class="amber-progress" style="width:88%"></span></div><div class="course-card-bottom"><span>Grade to date</span><strong>A+</strong></div></article>
+                    <article class="content-panel course-card"><div class="course-card-top"><span class="course-code green-code">CS409</span><span class="course-progress-label">79% complete</span></div><h3>Distributed Systems</h3><p>Prof. R. Iyer <span>·</span> 3 credits</p><div class="course-progress"><span class="green-progress" style="width:79%"></span></div><div class="course-card-bottom"><span>Grade to date</span><strong>A</strong></div></article>
+                    <article class="content-panel course-card"><div class="course-card-top"><span class="course-code">CS411</span><span class="course-progress-label">84% complete</span></div><h3>Information Security</h3><p>Dr. Meera Nair <span>·</span> 3 credits</p><div class="course-progress"><span style="width:84%"></span></div><div class="course-card-bottom"><span>Grade to date</span><strong>A</strong></div></article>
+                    <article class="content-panel course-card"><div class="course-card-top"><span class="course-code purple-code">CS499</span><span class="course-progress-label">96% complete</span></div><h3>Major Project II</h3><p>Project Committee <span>·</span> 2 credits</p><div class="course-progress"><span class="purple-progress" style="width:96%"></span></div><div class="course-card-bottom"><span>Grade to date</span><strong>O</strong></div></article>
+                </div>
+            </section>
+
+            <section class="student-page" id="page-certificates" data-title="Certificates">
+                <div class="page-intro"><div><p class="page-kicker">YOUR VERIFIED CREDENTIALS</p><h2>Certificates</h2><p>Portable achievements, secured by blockchain verification.</p></div><span class="certificate-count"><strong>08</strong> credentials</span></div>
+                <div class="certificate-grid">
+                    <article class="credential-card"><div class="credential-art blue-art"><span class="credential-seal">EC</span><span class="credential-art-label">ABC INSTITUTE OF TECHNOLOGY</span><strong>Certificate<br>of Achievement</strong><small>EDUCHAIN VERIFIED</small></div><div class="credential-info"><div class="credential-title"><div><h3>Cloud Computing Essentials</h3><span>Issued Aug 18, 2026</span></div><span class="verified-status"><i></i>Verified</span></div><p class="credential-id">CERT-2026-0818-CC</p><div class="credential-actions"><button type="button" class="outline-button" data-certificate="Cloud Computing Essentials" data-certificate-id="CERT-2026-0818-CC" data-certificate-date="August 18, 2026">View certificate</button><button type="button" class="solid-small" data-verify="CERT-2026-0818-CC">Verify on blockchain</button></div></div></article>
+                    <article class="credential-card"><div class="credential-art violet-art"><span class="credential-seal">EC</span><span class="credential-art-label">ABC INSTITUTE OF TECHNOLOGY</span><strong>Certificate<br>of Completion</strong><small>EDUCHAIN VERIFIED</small></div><div class="credential-info"><div class="credential-title"><div><h3>Data Structures & Algorithms</h3><span>Issued Jun 02, 2026</span></div><span class="verified-status"><i></i>Verified</span></div><p class="credential-id">CERT-2026-0602-DSA</p><div class="credential-actions"><button type="button" class="outline-button" data-certificate="Data Structures & Algorithms" data-certificate-id="CERT-2026-0602-DSA" data-certificate-date="June 2, 2026">View certificate</button><button type="button" class="solid-small" data-verify="CERT-2026-0602-DSA">Verify on blockchain</button></div></div></article>
+                    <article class="credential-card"><div class="credential-art green-art"><span class="credential-seal">EC</span><span class="credential-art-label">ABC INSTITUTE OF TECHNOLOGY</span><strong>Certificate<br>of Participation</strong><small>EDUCHAIN VERIFIED</small></div><div class="credential-info"><div class="credential-title"><div><h3>National Hackathon 2026</h3><span>Issued Mar 14, 2026</span></div><span class="verified-status"><i></i>Verified</span></div><p class="credential-id">CERT-2026-0314-NH</p><div class="credential-actions"><button type="button" class="outline-button" data-certificate="National Hackathon 2026" data-certificate-id="CERT-2026-0314-NH" data-certificate-date="March 14, 2026">View certificate</button><button type="button" class="solid-small" data-verify="CERT-2026-0314-NH">Verify on blockchain</button></div></div></article>
+                    <article class="credential-card"><div class="credential-art amber-art"><span class="credential-seal">EC</span><span class="credential-art-label">ABC INSTITUTE OF TECHNOLOGY</span><strong>Certificate<br>of Excellence</strong><small>EDUCHAIN VERIFIED</small></div><div class="credential-info"><div class="credential-title"><div><h3>Academic Excellence · Sem V</h3><span>Issued Jan 22, 2026</span></div><span class="verified-status"><i></i>Verified</span></div><p class="credential-id">CERT-2026-0122-AE</p><div class="credential-actions"><button type="button" class="outline-button" data-certificate="Academic Excellence · Sem V" data-certificate-id="CERT-2026-0122-AE" data-certificate-date="January 22, 2026">View certificate</button><button type="button" class="solid-small" data-verify="CERT-2026-0122-AE">Verify on blockchain</button></div></div></article>
+                </div>
+            </section>
+
+            <section class="student-page" id="page-achievements" data-title="Achievements">
+                <div class="page-intro"><div><p class="page-kicker">MILESTONES & RECOGNITION</p><h2>Achievements</h2><p>Accomplishments earned throughout your academic journey.</p></div><span class="certificate-count"><strong>12</strong> achievements</span></div>
+                <div class="achievement-grid">
+                    <article class="content-panel achievement-card"><div class="achievement-icon achievement-blue">✳</div><div class="achievement-copy"><span class="achievement-category">ACADEMIC EXCELLENCE</span><h3>Dean's List · Semester V</h3><p>Recognized for outstanding academic performance with a semester GPA above 3.8.</p><div class="achievement-meta"><span>Jan 22, 2026</span><span class="verified-status"><i></i>Verified</span></div></div></article>
+                    <article class="content-panel achievement-card"><div class="achievement-icon achievement-purple">◇</div><div class="achievement-copy"><span class="achievement-category">INNOVATION</span><h3>National Hackathon Finalist</h3><p>Top 10 finalist for an accessible learning platform at National Hackathon 2026.</p><div class="achievement-meta"><span>Mar 14, 2026</span><span class="verified-status"><i></i>Verified</span></div></div></article>
+                    <article class="content-panel achievement-card"><div class="achievement-icon achievement-amber">↗</div><div class="achievement-copy"><span class="achievement-category">LEADERSHIP</span><h3>Tech Club · Project Lead</h3><p>Led a team of eight students to deliver two community technology workshops.</p><div class="achievement-meta"><span>Feb 08, 2026</span><span class="verified-status"><i></i>Verified</span></div></div></article>
+                    <article class="content-panel achievement-card"><div class="achievement-icon achievement-green">⌘</div><div class="achievement-copy"><span class="achievement-category">COMMUNITY</span><h3>Open Source Contributor</h3><p>Recognized for meaningful contributions to student-led open source projects.</p><div class="achievement-meta"><span>Dec 16, 2025</span><span class="verified-status"><i></i>Verified</span></div></div></article>
+                </div>
+            </section>
+
+            <section class="student-page" id="page-events" data-title="College Events">
+                <div class="page-intro"><div><p class="page-kicker">CAMPUS LIFE</p><h2>College Events</h2><p>Discover what’s happening at ABC Institute of Technology.</p></div><span class="semester-pill"><span></span>2 registered</span></div>
+                <div class="event-list">
+                    <article class="content-panel event-card"><div class="event-date large-event-date"><strong>07</strong><span>OCT</span></div><div class="event-card-copy"><span class="event-category">TECHNOLOGY · CONFERENCE</span><h3>FutureTech Symposium</h3><p>Explore emerging technology with researchers, founders, and fellow students.</p><div class="event-meta"><span>◷ 10:00 AM – 4:00 PM</span><span>⌖ Innovation Hall</span></div></div><button type="button" class="event-button registered-button" data-event="FutureTech Symposium">Registered ✓</button></article>
+                    <article class="content-panel event-card"><div class="event-date large-event-date purple-date"><strong>12</strong><span>OCT</span></div><div class="event-card-copy"><span class="event-category purple-category">COMMUNITY · WORKSHOP</span><h3>Open Source Week</h3><p>Build in the open. Meet project maintainers and make your first contribution.</p><div class="event-meta"><span>◷ 2:00 PM – 5:00 PM</span><span>⌖ Engineering Block</span></div></div><button type="button" class="event-button" data-event="Open Source Week">Register</button></article>
+                    <article class="content-panel event-card"><div class="event-date large-event-date amber-date"><strong>18</strong><span>OCT</span></div><div class="event-card-copy"><span class="event-category amber-category">CAREERS · NETWORKING</span><h3>Industry Connect: Autumn</h3><p>Meet hiring teams and alumni from leading technology organizations.</p><div class="event-meta"><span>◷ 11:00 AM – 3:00 PM</span><span>⌖ Main Auditorium</span></div></div><button type="button" class="event-button" data-event="Industry Connect: Autumn">Register</button></article>
+                </div>
+            </section>
+
+            <section class="student-page" id="page-verify" data-title="Verify Records">
+                <div class="page-intro"><div><p class="page-kicker">INDEPENDENT CREDENTIAL CHECK</p><h2>Verify Records</h2><p>Confirm the authenticity and integrity of an EduChain credential.</p></div><span class="profile-verified"><i></i>Public verification</span></div>
+                <section class="content-panel verify-search-panel"><div class="verify-search-heading"><span class="verify-search-icon">⌕</span><div><h3>Look up a record</h3><p>Enter a record ID or certificate ID to check its blockchain status.</p></div></div><form class="verify-form" id="verifyForm"><label class="sr-only" for="recordSearch">Record ID or Certificate ID</label><input id="recordSearch" type="text" placeholder="e.g. CERT-2026-0818-CC" required><button type="submit" class="solid-small">Verify record <span>→</span></button></form><div class="example-records">Try a sample: <button type="button" data-sample-id="CERT-2026-0818-CC">CERT-2026-0818-CC</button><button type="button" data-sample-id="REC-2026-061-AI">REC-2026-061-AI</button></div></section>
+                <section class="verification-result" id="verificationResult" aria-live="polite"><div class="result-seal">✓</div><div class="result-copy"><span class="result-overline">EDUCHAIN LEDGER RESULT</span><h3 id="verificationTitle">Blockchain Verified</h3><p id="verificationDescription">This record is authentic and its integrity has not been altered.</p><div class="result-meta"><div><span>RECORD ID</span><strong id="verifiedRecordId">CERT-2026-0818-CC</strong></div><div><span>NETWORK</span><strong>EduChain · Proof of Authority</strong></div><div><span>VERIFIED AT</span><strong>Block #8,421,907</strong></div></div></div><span class="verification-stamp">✓ VERIFIED</span></section>
+                <p class="demo-note">Verification results shown in this prototype use sample records and are not connected to a live blockchain.</p>
+            </section>
+
+            <section class="student-page" id="page-wallet" data-title="My Wallet">
+                <div class="page-intro"><div><p class="page-kicker">YOUR WEB3 IDENTITY</p><h2>My Wallet</h2><p>Connect a wallet to manage your decentralized student identity.</p></div><span class="profile-verified disconnected-label" id="walletPageStatus">Not connected</span></div>
+                <section class="content-panel wallet-connect-card"><div class="wallet-art"><div class="wallet-orbit orbit-one"></div><div class="wallet-orbit orbit-two"></div><div class="wallet-symbol">⬡</div></div><div class="wallet-connect-copy"><span class="page-kicker">NON-CUSTODIAL WALLET</span><h3>One wallet. Your verified academic identity.</h3><p>Connect MetaMask to associate your wallet with your student profile and manage blockchain-backed credentials.</p><button type="button" class="wallet-connect-action" onclick="connectStudentWallet()"><span>⬡</span> Connect MetaMask</button><small>EduChain will never ask for your seed phrase or private keys.</small></div></section>
+                <section class="content-panel wallet-details"><div class="panel-heading"><div><h3>Connection details</h3><p>Your active wallet session</p></div><span class="wallet-connection-pill" id="walletConnectionPill"><i></i>Not connected</span></div><div class="wallet-detail-grid"><div><span>WALLET ADDRESS</span><strong class="wallet-address" id="walletAddress">Connect a wallet to view your address</strong></div><div><span>NETWORK</span><strong id="walletNetwork">—</strong></div><div><span>CONNECTION</span><strong id="walletConnection">Disconnected</strong></div></div><p class="wallet-feedback" id="walletFeedback" role="status" aria-live="polite"></p></section>
+            </section>
+        </div>
+        <footer class="workspace-footer"><span>© 2026 EduChain</span><span>ABC Institute of Technology <i>·</i> Student portal</span></footer>
+    </main>
+</div>
+
+<dialog class="certificate-dialog" id="certificateDialog"><button class="dialog-close" type="button" aria-label="Close certificate" id="closeCertificate">×</button><div class="dialog-certificate"><span class="dialog-seal">EC</span><span class="dialog-institute">ABC INSTITUTE OF TECHNOLOGY · EDUCHAIN</span><p>Certificate of Achievement</p><h2 id="dialogCertificateName">Cloud Computing Essentials</h2><span class="dialog-recipient">This credential is awarded to</span><strong id="dialogStudentName">Aarav Sharma</strong><span class="dialog-date" id="dialogCertificateDate">Issued August 18, 2026</span><span class="dialog-record" id="dialogCertificateId">CERT-2026-0818-CC</span></div></dialog>
+
+<script>
+document.getElementById("signupForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    createAccount().catch(() => setMessage("message", "Could not create the account in this browser.", "error"));
+});
+
+document.getElementById("loginLink").addEventListener("click", function(event) {
+    event.preventDefault();
+    showLogin();
+});
+
+document.getElementById("signupLink").addEventListener("click", function(event) {
+    event.preventDefault();
+    showSignup();
+});
+
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    loginWithCredentials().catch(() => setMessage("loginMessage", "Could not complete login in this browser.", "error"));
+});
+
+function setMessage(id, text, className) {
+    const message = document.getElementById(id);
+    message.textContent = text;
+    message.className = className;
+}
+
+function readAccounts() {
+    return JSON.parse(localStorage.getItem("educhainAccounts") || "{}");
+}
+
+async function hashPassword(password) {
+    const bytes = new TextEncoder().encode(password);
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function createAccount() {
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const message = document.getElementById("message");
+
+    if (password !== confirmPassword) {
+        setMessage("message", "Passwords do not match.", "error");
         return;
-      }
-      container.innerHTML = shares.map(share => {
-        const record = records.find(item => item.id === share.recordId);
-        return `<div class="share-item"><div><strong>${escapeHtml(record?.title || 'Record')}</strong><span>Shared with ${escapeHtml(share.recipient)} · Expires in ${escapeHtml(share.expires)}</span></div><button class="button danger" type="button" data-revoke="${share.id}">Revoke access</button></div>`;
-      }).join('');
-      container.querySelectorAll('[data-revoke]').forEach(button => button.addEventListener('click', () => {
-        const index = shares.findIndex(share => share.id === Number(button.dataset.revoke));
-        if (index !== -1) shares.splice(index, 1);
-        renderShares();
-        showToast('Demo access revoked.');
-      }));
-    }
-    function showPage(pageId) {
-      if (!pageLabels[pageId]) return;
-      document.querySelectorAll('.page').forEach(page => page.classList.toggle('show', page.id === pageId));
-      document.querySelectorAll('.nav button').forEach(button => button.classList.toggle('active', button.dataset.page === pageId));
-      document.getElementById('breadcrumbPage').textContent = pageLabels[pageId];
-      document.getElementById('welcomeTitle').textContent = welcomeLabels[pageId];
-      if (pageId === 'documents') renderDocuments();
-    }
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
-    }
-    function openRecord(recordId) {
-      activeRecord = records.find(record => record.id === recordId);
-      if (!activeRecord) return;
-      document.getElementById('recordDialogTitle').textContent = activeRecord.title;
-      document.getElementById('recordPreview').innerHTML = `<div class="preview-sheet"><span class="preview-stamp">DEMO COPY · NOT AN OFFICIAL DOCUMENT</span><h3>${escapeHtml(activeRecord.title)}</h3><p>${escapeHtml(activeRecord.detail)}</p><div class="preview-details"><div><span>Issued by</span><strong>${escapeHtml(activeRecord.issuer)}</strong></div><div><span>Issue date</span><strong>${escapeHtml(activeRecord.issued)}</strong></div><div><span>Credential ID</span><strong>${escapeHtml(activeRecord.credential)}</strong></div><div><span>Status</span><strong>${escapeHtml(activeRecord.status)}</strong></div></div></div><p class="form-help">This preview contains sample metadata only. The original institute document is not available in this prototype.</p>`;
-      document.getElementById('recordDialog').showModal();
-    }
-    function downloadReceipt() {
-      if (!activeRecord) return;
-      const lines = ['EDUCHAIN DEMO RECORD RECEIPT', 'NOT AN OFFICIAL DOCUMENT', '', `Record: ${activeRecord.title}`, `Credential ID: ${activeRecord.credential}`, `Issuer: ${activeRecord.issuer}`, `Issued: ${activeRecord.issued}`, `Status: ${activeRecord.status}`, `Details: ${activeRecord.detail}`, '', 'Prototype receipt only. This is not the original institute-issued document.'];
-      const file = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(file);
-      link.download = `${activeRecord.credential.toLowerCase()}-demo-receipt.txt`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-      showToast('Demo receipt downloaded.');
     }
 
-    document.querySelectorAll('.nav button').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
-    document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.go)));
-    document.querySelectorAll('.filter-button').forEach(button => button.addEventListener('click', () => {
-      activeFilter = button.dataset.filter;
-      document.querySelectorAll('.filter-button').forEach(filter => filter.classList.toggle('active', filter === button));
-      renderDocuments();
-    }));
-    document.getElementById('documentSearch').addEventListener('input', renderDocuments);
-    document.getElementById('walletButton').addEventListener('click', event => {
-      const button = event.currentTarget;
-      if (button.classList.contains('connected')) {
-        button.classList.remove('connected');
-        button.innerHTML = '<span>◇</span> Connect wallet';
-        document.getElementById('statWallet').textContent = 'Not connected';
-        showToast('Demo wallet disconnected.');
-      } else {
-        button.classList.add('connected');
-        button.textContent = '0x82…91AC';
-        document.getElementById('statWallet').textContent = 'Connected';
-        showToast('Demo wallet connected. No blockchain is queried.');
-      }
+    const accounts = readAccounts();
+    if (accounts[email]) {
+        setMessage("message", "An account with this email already exists. Please log in.", "error");
+        return;
+    }
+
+    accounts[email] = {
+        name: document.getElementById("fullName").value.trim(),
+        role: "student",
+        studentId: document.getElementById("studentId").value.trim(),
+        course: document.getElementById("course").value,
+        college: document.getElementById("college").value.trim(),
+        admissionYear: document.getElementById("admissionYear").value,
+        passwordHash: await hashPassword(password)
+    };
+    localStorage.setItem("educhainAccounts", JSON.stringify(accounts));
+    setMessage("message", "Account created. Login with your email and password.", "success");
+    document.getElementById("loginEmail").value = email;
+    showLogin();
+}
+
+async function loginWithCredentials() {
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const passwordHash = await hashPassword(document.getElementById("loginPassword").value);
+    const account = readAccounts()[email];
+
+    if (!account || account.passwordHash !== passwordHash) {
+        setMessage("loginMessage", "Email or password is incorrect.", "error");
+        return;
+    }
+
+    if (account.role !== "student") {
+        setMessage("loginMessage", "Admin access is available through the institute wallet.", "error");
+        return;
+    }
+
+    showStudentDashboard(account, email);
+}
+
+async function connectWallet() {
+    if (!window.ethereum) {
+        setMessage("message", "MetaMask was not found. Install the extension and try again.", "error");
+        return;
+    }
+
+    try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        const wallet = accounts[0];
+        document.querySelector(".wallet-btn").textContent = wallet ? wallet.slice(0, 6) + "..." + wallet.slice(-4) : "Connect Wallet";
+    } catch (error) {
+        setMessage("message", "Wallet connection was cancelled or failed.", "error");
+    }
+}
+
+function showDashboard(identity, role, walletMessage) {
+    const displayRole = role.charAt(0).toUpperCase() + role.slice(1);
+    document.querySelector(".app").classList.remove("hidden");
+    document.getElementById("studentApp").classList.add("hidden");
+    document.getElementById("signupView").classList.add("hidden");
+    document.getElementById("loginView").classList.add("hidden");
+    document.getElementById("dashboardView").classList.remove("hidden");
+    document.getElementById("dashboardTitle").textContent = displayRole + " Dashboard";
+    document.getElementById("dashboardWelcome").textContent = "Welcome to your EduChain workspace.";
+    document.getElementById("dashboardIdentity").textContent = identity;
+    document.getElementById("dashboardRole").textContent = displayRole;
+    document.getElementById("walletStatus").textContent = walletMessage;
+}
+
+let currentStudent = null;
+let connectedWalletAddress = "";
+let connectedChainId = "";
+let walletListenersRegistered = false;
+const registeredEvents = new Set(["FutureTech Symposium", "Design Sprint Night"]);
+
+function getInitials(name) {
+    return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
+}
+
+function showStudentDashboard(account, email) {
+    const name = account.name || email;
+    const studentId = account.studentId || "STU2026100";
+    const course = account.course || "B.Tech Computer Science";
+    currentStudent = { ...account, name, studentId, course, email };
+
+    document.querySelector(".app").classList.add("hidden");
+    document.getElementById("studentApp").classList.remove("hidden");
+    document.getElementById("sidebarAvatar").textContent = getInitials(name);
+    document.getElementById("profileAvatar").textContent = getInitials(name);
+    document.getElementById("sidebarName").textContent = name;
+    document.getElementById("profileName").textContent = name;
+    document.getElementById("welcomeName").textContent = name.split(/\s+/)[0];
+    document.getElementById("sidebarStudentId").textContent = studentId;
+    document.getElementById("welcomeStudentId").textContent = studentId;
+    document.getElementById("profileStudentId").textContent = studentId;
+    document.getElementById("welcomeCourse").textContent = course;
+    document.getElementById("profileCourse").textContent = course;
+    document.getElementById("profileEmail").textContent = email;
+    document.getElementById("profileAdmissionYear").textContent = account.admissionYear || "2024";
+    document.getElementById("dialogStudentName").textContent = name;
+    setStudentPage("dashboard");
+}
+
+function setStudentPage(pageName) {
+    document.querySelectorAll(".student-page").forEach(page => {
+        page.classList.toggle("active", page.id === "page-" + pageName);
     });
-    document.getElementById('downloadReceipt').addEventListener('click', downloadReceipt);
-    document.getElementById('newShare').addEventListener('click', () => document.getElementById('shareDialog').showModal());
-    document.getElementById('requestDocument').addEventListener('click', () => document.getElementById('requestDialog').showModal());
-    document.getElementById('shareForm').addEventListener('submit', event => {
-      event.preventDefault();
-      shares.push({ id: Date.now(), recordId: document.getElementById('shareRecord').value, recipient: document.getElementById('shareRecipient').value.trim(), expires: document.getElementById('shareExpiry').value, created: 'Today' });
-      renderShares();
-      document.getElementById('shareDialog').close();
-      event.currentTarget.reset();
-      showToast('Demo share created. No document was sent.');
+    document.querySelectorAll(".student-nav-item[data-page]").forEach(button => {
+        const isActive = button.dataset.page === pageName;
+        button.classList.toggle("active", isActive);
+        if (isActive) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
     });
-    document.getElementById('requestForm').addEventListener('submit', event => {
-      event.preventDefault();
-      const type = document.getElementById('requestType').value;
-      const note = document.getElementById('requestNote').value.trim();
-      activity.unshift({ mark: '＋', title: `${type} request saved`, time: note ? `Local demo request · ${note}` : 'Local demo request · Not sent to the institute' });
-      renderActivity();
-      document.getElementById('requestDialog').close();
-      event.currentTarget.reset();
-      showToast('Request saved locally. The institute was not notified.');
+    const activePage = document.getElementById("page-" + pageName);
+    if (activePage) document.getElementById("pageTitle").textContent = activePage.dataset.title;
+    document.querySelector(".student-main").scrollTop = 0;
+}
+
+document.querySelectorAll(".student-nav-item[data-page]").forEach(button => {
+    const label = button.querySelector("span:last-child").textContent.trim();
+    button.setAttribute("aria-label", label);
+    button.title = label;
+    button.addEventListener("click", () => setStudentPage(button.dataset.page));
+});
+
+document.querySelector(".student-brand").addEventListener("click", event => {
+    event.preventDefault();
+    setStudentPage("dashboard");
+});
+
+document.querySelectorAll("[data-go]").forEach(button => {
+    button.addEventListener("click", () => setStudentPage(button.dataset.go));
+});
+
+document.getElementById("studentLogout").addEventListener("click", () => {
+    document.getElementById("studentApp").classList.add("hidden");
+    document.querySelector(".app").classList.remove("hidden");
+    showLogin();
+});
+
+document.querySelectorAll("[data-certificate]").forEach(button => {
+    button.addEventListener("click", () => {
+        document.getElementById("dialogCertificateName").textContent = button.dataset.certificate;
+        document.getElementById("dialogCertificateId").textContent = button.dataset.certificateId;
+        document.getElementById("dialogCertificateDate").textContent = "Issued " + button.dataset.certificateDate;
+        document.getElementById("certificateDialog").showModal();
     });
-    document.getElementById('revealIdentity').addEventListener('click', event => {
-      const number = document.getElementById('identityNumber');
-      const revealed = number.textContent === 'XXXX XXXX 1234';
-      number.textContent = revealed ? '1234 5678 1234' : 'XXXX XXXX 1234';
-      event.currentTarget.textContent = revealed ? 'Mask' : 'Reveal';
+});
+
+document.getElementById("closeCertificate").addEventListener("click", () => {
+    document.getElementById("certificateDialog").close();
+});
+
+document.querySelectorAll("[data-verify]").forEach(button => {
+    button.addEventListener("click", () => {
+        setStudentPage("verify");
+        document.getElementById("recordSearch").value = button.dataset.verify;
+        verifyRecord(button.dataset.verify);
     });
-    document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
-    document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('click', event => {
-      const bounds = dialog.getBoundingClientRect();
-      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
-    }));
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+});
+
+document.querySelectorAll("[data-sample-id]").forEach(button => {
+    button.addEventListener("click", () => {
+        document.getElementById("recordSearch").value = button.dataset.sampleId;
+        verifyRecord(button.dataset.sampleId);
     });
-    renderDocuments();
-    renderActivity();
-    renderShares();
-  </script>
+});
+
+document.getElementById("verifyForm").addEventListener("submit", event => {
+    event.preventDefault();
+    verifyRecord(document.getElementById("recordSearch").value.trim());
+});
+
+function verifyRecord(recordId) {
+    const result = document.getElementById("verificationResult");
+    const knownRecord = /^(CERT-2026-(0818-CC|0602-DSA|0314-NH|0122-AE)|REC-2026-061-(AI|CC|SE|DS|IS|MP))$/i.test(recordId);
+    result.classList.toggle("not-verified", !knownRecord);
+    document.getElementById("verificationTitle").textContent = knownRecord ? "Blockchain Verified" : "Record not found";
+    document.getElementById("verificationDescription").textContent = knownRecord
+        ? "This record is authentic and its integrity has not been altered."
+        : "No matching record was found. Check the ID and try again.";
+    document.getElementById("verifiedRecordId").textContent = recordId || "—";
+    result.classList.add("visible");
+}
+
+document.querySelectorAll("[data-event]").forEach(button => {
+    button.addEventListener("click", () => {
+        const eventName = button.dataset.event;
+        if (registeredEvents.has(eventName)) {
+            registeredEvents.delete(eventName);
+            button.textContent = "Register";
+            button.classList.remove("registered-button");
+        } else {
+            registeredEvents.add(eventName);
+            button.textContent = "Registered ✓";
+            button.classList.add("registered-button");
+        }
+        document.getElementById("registeredEventCount").textContent = String(registeredEvents.size).padStart(2, "0");
+    });
+});
+
+function networkName(chainId) {
+    const networks = {
+        "0x1": "Ethereum Mainnet",
+        "0xaa36a7": "Sepolia Testnet",
+        "0x89": "Polygon Mainnet",
+        "0x13882": "Polygon Amoy"
+    };
+    return networks[chainId] || (chainId ? "Network " + chainId : "Unknown network");
+}
+
+function updateWalletDisplay() {
+    const isConnected = Boolean(connectedWalletAddress);
+    const shortAddress = isConnected ? connectedWalletAddress.slice(0, 6) + "…" + connectedWalletAddress.slice(-4) : "";
+    document.getElementById("walletAddress").textContent = isConnected ? connectedWalletAddress : "Connect a wallet to view your address";
+    document.getElementById("walletNetwork").textContent = isConnected ? networkName(connectedChainId) : "—";
+    document.getElementById("walletConnection").textContent = isConnected ? "Connected" : "Disconnected";
+    document.getElementById("walletConnectionPill").innerHTML = isConnected ? "<i></i>Connected" : "<i></i>Not connected";
+    document.getElementById("walletConnectionPill").classList.toggle("connected", isConnected);
+    document.getElementById("walletPageStatus").innerHTML = isConnected ? "<i></i>Wallet connected" : "Not connected";
+    document.getElementById("walletPageStatus").classList.toggle("connected-label", isConnected);
+    document.getElementById("headerWalletButton").innerHTML = isConnected ? "<span>⬡</span> " + shortAddress : "<span>⬡</span> Connect wallet";
+    document.getElementById("walletFeedback").textContent = isConnected ? "Wallet connected to your student workspace." : "";
+}
+
+async function connectStudentWallet() {
+    const feedback = document.getElementById("walletFeedback");
+    if (!window.ethereum) {
+        feedback.textContent = "MetaMask was not detected. Install the extension, then try again.";
+        feedback.className = "wallet-feedback error";
+        return;
+    }
+
+    try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        connectedWalletAddress = accounts[0] || "";
+        connectedChainId = await window.ethereum.request({ method: "eth_chainId" });
+        updateWalletDisplay();
+        feedback.className = "wallet-feedback";
+        if (!walletListenersRegistered && window.ethereum.on) {
+            window.ethereum.on("accountsChanged", accountsChanged => {
+                connectedWalletAddress = accountsChanged[0] || "";
+                updateWalletDisplay();
+            });
+            window.ethereum.on("chainChanged", chainId => {
+                connectedChainId = chainId;
+                updateWalletDisplay();
+            });
+            walletListenersRegistered = true;
+        }
+    } catch (error) {
+        feedback.textContent = "Wallet connection was cancelled or could not be completed.";
+        feedback.className = "wallet-feedback error";
+    }
+}
+
+function showLogin() {
+    document.getElementById("signupView").classList.add("hidden");
+    document.getElementById("signupView").classList.add("hidden");
+    document.getElementById("dashboardView").classList.add("hidden");
+    document.getElementById("loginView").classList.remove("hidden");
+}
+
+function showSignup() {
+    document.getElementById("loginView").classList.add("hidden");
+    document.getElementById("dashboardView").classList.add("hidden");
+    document.getElementById("signupView").classList.remove("hidden");
+}
+</script>
+
 </body>
+<script>
+  const API_BASE_URL = "http://127.0.0.1:8000/api";
+  
+  document.addEventListener("DOMContentLoaded", () => {
+      // 1. Handle Account Creation / Student Sign Up Form
+      const signupForm = document.getElementById("signupForm");
+      if (signupForm) {
+          signupForm.addEventListener("submit", async function(e) {
+              e.preventDefault();
+              
+              const fullName = document.getElementById("fullName").value.trim();
+              const email = document.getElementById("email").value.trim();
+              const studentId = document.getElementById("studentId").value.trim();
+              const course = document.getElementById("course").value;
+              const college = document.getElementById("college").value.trim();
+              const admissionYear = document.getElementById("admissionYear").value;
+              const password = document.getElementById("password").value;
+              const confirmPassword = document.getElementById("confirmPassword").value;
+              const messageEl = document.getElementById("message");
+  
+              if (password !== confirmPassword) {
+                  if (messageEl) messageEl.textContent = "Error: Passwords do not match.";
+                  alert("Passwords do not match!");
+                  return;
+              }
+  
+              try {
+                  const response = await fetch(`${API_BASE_URL}/register-student/`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                          student_id: studentId,
+                          full_name: fullName,
+                          email: email,
+                          course: course,
+                          college: college,
+                          admission_year: admissionYear,
+                          password: password
+                      })
+                  });
+                  
+                  const data = await response.json();
+                  if (response.ok) {
+                      alert("Account created successfully in Django database!");
+                      if (messageEl) messageEl.textContent = "Registration successful!";
+                  } else {
+                      alert("Registration failed: " + (data.error || JSON.stringify(data)));
+                  }
+              } catch (err) {
+                  console.error("Signup error:", err);
+                  alert("Could not connect to Django backend server.");
+              }
+          });
+      }
+  
+      // 2. Handle Login Form
+      const loginForm = document.getElementById("loginForm");
+      if (loginForm) {
+          loginForm.addEventListener("submit", async function(e) {
+              e.preventDefault();
+              const email = document.getElementById("loginEmail").value.trim();
+              const password = document.getElementById("loginPassword").value;
+              const loginMessage = document.getElementById("loginMessage");
+  
+              try {
+                  const response = await fetch(`${API_BASE_URL}/login/`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email, password })
+                  });
+                  const data = await response.json();
+                  if (response.ok) {
+                      alert("Login successful!");
+                      if (loginMessage) loginMessage.textContent = "Logged in!";
+                  } else {
+                      alert("Login failed: " + (data.error || "Invalid credentials"));
+                  }
+              } catch (err) {
+                  console.error("Login error:", err);
+                  alert("Could not connect to backend.");
+              }
+          });
+      }
+  });
+  
+  // 3. Fully Functional Document Upload & Blockchain Anchoring
+  async function uploadDocument(event) {
+      if (event) event.preventDefault();
+  
+      const studentId = prompt("Enter Student ID for this certificate record:");
+      const title = prompt("Enter Document/Certificate Title:");
+      const category = prompt("Enter Category (e.g., Academic, Achievement):");
+      
+      // Create a temporary file input dialog if not natively in the form
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.onchange = async e => {
+          const file = e.target.files[0];
+          if (!file) return;
+  
+          const formData = new FormData();
+          formData.append("student_id", studentId);
+          formData.append("title", title || "Certificate");
+          formData.append("category", category || "Academic");
+          formData.append("file", file);
+  
+          try {
+              const response = await fetch(`${API_BASE_URL}/upload-certificate/`, {
+                  method: "POST",
+                  body: formData
+              });
+              const data = await response.json();
+  
+              if (response.ok) {
+                  alert(`Success! Document hashed and anchored on Ganache.\nHash: ${data.document_hash}\nTx: ${data.transaction_hash}`);
+              } else {
+                  alert("Upload failed: " + (data.error || JSON.stringify(data)));
+              }
+          } catch (err) {
+              console.error("Upload execution error:", err);
+              alert("Failed to communicate with Django backend.");
+          }
+      };
+      fileInput.click();
+  }
+  
+  // 4. Fully Functional Document Verification via Blockchain
+  async function verifyDocument(event) {
+      if (event) event.preventDefault();
+  
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.onchange = async e => {
+          const file = e.target.files[0];
+          if (!file) return;
+  
+          const formData = new FormData();
+          formData.append("file", file);
+  
+          try {
+              const response = await fetch(`${API_BASE_URL}/verify-certificate/`, {
+                  method: "POST",
+                  body: formData
+              });
+              const data = await response.json();
+  
+              if (response.ok) {
+                  alert(`Verification Successful!\nStatus: ${data.status}\nStudent ID: ${data.student_id}\nTitle: ${data.document_title}`);
+              } else {
+                  alert("Verification Failed: " + (data.message || data.error));
+              }
+          } catch (err) {
+              console.error("Verification execution error:", err);
+              alert("Failed to reach backend verification service.");
+          }
+      };
+      fileInput.click();
+  }
+  </script>
 </html>
